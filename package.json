@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/SavouryGin/NodeJS_GMP_2022Q4_EPAM/issues"
   },
-  "homepage": "https://github.com/SavouryGin/NodeJS_GMP_2022Q4_EPAM#readme"
+  "homepage": "https://github.com/SavouryGin/NodeJS_GMP_2022Q4_EPAM#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
 }
