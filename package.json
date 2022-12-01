@@ -4,7 +4,9 @@
   "description": "Project for home tasks completed in course NodeJS GMP 2022.",
   "main": "index.js",
   "scripts": {
-    "run": "nodemon ./task1/server.js"
+    "task_1.1": "nodemon ./lib/task_1.1/index.js",
+    "task_1.2": "nodemon ./lib/task_1.2/index.js",
+    "task_1.3": "nodemon ./lib/task_1.3/index.js"
   },
   "repository": {
     "type": "git",
