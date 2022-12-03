@@ -8,8 +8,8 @@ In the project directory, you can run:
 
 ### Task 1
 
-#### `npm run task_1.1`
+#### `npm run 1.1`
 
-#### `npm run task_1.2`
+#### `npm run 1.2`
 
-#### `npm run task_1.3`
+#### `npm run 1.3`
