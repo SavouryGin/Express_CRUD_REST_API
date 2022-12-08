@@ -12,4 +12,6 @@ In the project directory, you can run:
 
 #### `npm run 1.2`
 
-#### `npm run 1.3`
+#### `npm run 1.3.1`
+
+#### `npm run 1.3.2`
