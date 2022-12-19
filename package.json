@@ -4,7 +4,10 @@
   "description": "Project for home tasks completed in course NodeJS GMP 2022.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "1.1": "nodemon ./lib/task_1.1/index.js",
+    "1.2": "nodemon ./lib/task_1.2/index.js",
+    "1.3.1": "nodemon --exec babel-node ./lib/task_1.3/1.1_redone.js",
+    "1.3.2": "nodemon --exec babel-node ./lib/task_1.3/1.2_redone.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +27,13 @@
   },
   "homepage": "https://github.com/SavouryGin/NodeJS_GMP_2022Q4_EPAM#readme",
   "devDependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.20.5",
+    "@babel/node": "^7.20.5",
+    "@babel/preset-env": "^7.20.2",
     "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "csvtojson": "^2.0.10"
   }
 }
