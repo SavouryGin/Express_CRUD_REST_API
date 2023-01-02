@@ -14,7 +14,7 @@ function logResults(counter) {
 }
 
 function convertCSVtoJSONLineByLine(userPath) {
-  var DEFAULT_PATH = path.resolve(__dirname, "../../csv/nodejs-hw1-ex1.csv"),
+  var DEFAULT_PATH = path.resolve(__dirname, "../csv/nodejs-hw1-ex1.csv"),
     inputPath = userPath || DEFAULT_PATH,
     outputPath = inputPath.split(".")[0] + "-converted.txt";
 

@@ -15,7 +15,7 @@ const logResults = (counter) => {
 };
 
 const convertCSVtoJSONLineByLine = async (userPath) => {
-  const DEFAULT_PATH = resolve(__dirname, "../../csv/nodejs-hw1-ex1.csv"),
+  const DEFAULT_PATH = resolve(__dirname, "../csv/nodejs-hw1-ex1.csv"),
     inputPath = userPath || DEFAULT_PATH,
     outputPath = inputPath.split(".")[0] + "-converted.txt";
 
