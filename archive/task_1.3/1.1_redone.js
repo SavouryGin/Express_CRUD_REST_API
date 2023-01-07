@@ -1,4 +1,4 @@
-import { createInterface } from "readline";
+import { createInterface } from 'readline';
 
 const rl = createInterface({
   input: process.stdin,
@@ -8,13 +8,13 @@ const rl = createInterface({
 });
 
 const reverseString = (input) => {
-  return input.split("").reverse().join("");
+  return input.split('').reverse().join('');
 };
 
 const readLineLoop = () => {
-  rl.question("Please type something:\n>> ", (answer) => {
-    if (answer === "exit" || answer === "quit") {
-      console.log("Exiting the program...");
+  rl.question('Please type something:\n>> ', (answer) => {
+    if (answer === 'exit' || answer === 'quit') {
+      console.log('Exiting the program...');
       return rl.close();
     }
 
@@ -23,5 +23,5 @@ const readLineLoop = () => {
   });
 };
 
-console.log("=== Task 1.1 ===");
+console.log('=== Task 1.1 ===');
 readLineLoop();
