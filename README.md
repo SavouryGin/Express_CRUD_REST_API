@@ -15,3 +15,9 @@ In the project directory, you can run:
 #### `npm run 1.3.1`
 
 #### `npm run 1.3.2`
+
+### Task 2
+
+#### `npm run start`
+
+Run the CRUD service

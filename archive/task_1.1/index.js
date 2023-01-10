@@ -1,20 +1,20 @@
-var readline = require("readline");
+const readline = require('readline');
 
 function reverseString(input) {
-  return input.split("").reverse().join("");
+  return input.split('').reverse().join('');
 }
 
 function readLineLoop() {
-  var rl = readline.createInterface({
+  const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     // Prevent the duplication of an input in the terminal
     terminal: false,
   });
 
-  rl.question("Please type something:\n>> ", function (answer) {
-    if (answer === "exit" || answer === "quit") {
-      console.log("Exiting the program...");
+  rl.question('Please type something:\n>> ', (answer) => {
+    if (answer === 'exit' || answer === 'quit') {
+      console.log('Exiting the program...');
       return rl.close();
     }
 
@@ -23,5 +23,5 @@ function readLineLoop() {
   });
 }
 
-console.log("=== Task 1.1 ===");
+console.log('=== Task 1.1 ===');
 readLineLoop();
