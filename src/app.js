@@ -1,5 +1,5 @@
 import express from 'express';
-import { usersRouter } from './api/index.js';
+import { usersRouter } from './routes/index.js';
 
 const PORT = 5000;
 const app = express();

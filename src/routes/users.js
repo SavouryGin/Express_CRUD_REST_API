@@ -6,9 +6,7 @@ import updateUserSchema from '../validators/update-user-validation-schema.js';
 
 export const usersRouter = express.Router();
 
-usersRouter.get('/', controller.getAllUsers);
-
-usersRouter.post('/add', validateSchema(addUserSchema), controller.addUser);
+usersRouter.get('/', controller.getAllUsers).post('/', validateSchema(addUserSchema), controller.addUser);
 
 usersRouter
   .route('/:id')
