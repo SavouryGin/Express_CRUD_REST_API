@@ -4,16 +4,14 @@ import validateSchema from '../validators/validate-schema.js';
 import addUserSchema from '../validators/add-user-validation-schema.js';
 import updateUserSchema from '../validators/update-user-validation-schema.js';
 
-const router = express.Router();
+export const usersRouter = express.Router();
 
-router.get('/', controller.getAllUsers);
+usersRouter.get('/', controller.getAllUsers);
 
-router.post('/add', validateSchema(addUserSchema), controller.addUser);
+usersRouter.post('/add', validateSchema(addUserSchema), controller.addUser);
 
-router
+usersRouter
   .route('/:id')
   .get(controller.getUserById)
   .delete(controller.deleteUserById)
   .patch(validateSchema(updateUserSchema), controller.updateUserById);
-
-export default router;
