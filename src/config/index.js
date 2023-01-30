@@ -9,7 +9,7 @@ export const CORS_OPTIONS = {
 export const DB_CONFIG = {
   HOST: 'localhost',
   USER: 'postgres',
-  PASSWORD: '123',
+  PASSWORD: 'Gin20062330',
   DB: 'node_js_gmp_2023_db',
   dialect: 'postgres',
   pool: {

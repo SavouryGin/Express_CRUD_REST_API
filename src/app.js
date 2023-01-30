@@ -18,7 +18,7 @@ db.sequelize
     console.log('The database has been synced.');
   })
   .catch((err) => {
-    console.log('Failed to sync db: ' + err.message);
+    console.log('Failed to sync the database: ' + err.message);
   });
 
 app.get('/', (req, res) => {

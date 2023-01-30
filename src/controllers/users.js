@@ -1,18 +1,21 @@
 import crypto from 'crypto';
+import db from '../models/index.js';
 
+const UsersDB = db.users;
+// const Op = db.Sequelize.Op;
 let users = [];
 
-const getAllUsers = (req, res) => {
-  const { loginSubstring, limit } = req.query;
+const getAllUsers = (queryParams) => {
+  const { loginSubstring, limit } = queryParams;
   const isAutoSuggestRequest = loginSubstring && loginSubstring.length && limit && Number.isInteger(+limit);
 
   const activeUsers = users.filter((user) => !user.isDeleted);
 
   if (isAutoSuggestRequest) {
     const filteredUsers = activeUsers.filter((user) => user.login.includes(loginSubstring)).slice(0, +limit);
-    res.send(filteredUsers);
+    return filteredUsers;
   } else {
-    res.send(activeUsers);
+    return activeUsers;
   }
 };
 
@@ -27,11 +30,13 @@ const getUserById = (req, res) => {
   }
 };
 
-const addUser = (req, res) => {
-  const newUser = { ...req.body, isDeleted: false, id: crypto.randomUUID() };
-  users.push(newUser);
-
-  res.send(`User with the id ${newUser.id} has been added to the list.`);
+const addUser = async (data) => {
+  try {
+    const newUser = await UsersDB.create({ ...data, isDeleted: false, id: crypto.randomUUID() });
+    return { status: 201, message: `User ${newUser.dataValues.login} has been added.` };
+  } catch (error) {
+    return { status: 500, message: error?.message || 'Cannot add a new user.' };
+  }
 };
 
 const deleteUserById = (req, res) => {

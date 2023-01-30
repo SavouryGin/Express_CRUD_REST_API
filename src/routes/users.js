@@ -6,7 +6,15 @@ import updateUserSchema from '../validators/update-user-validation-schema.js';
 
 export const usersRouter = express.Router();
 
-usersRouter.get('/', controller.getAllUsers).post('/', validateSchema(addUserSchema), controller.addUser);
+usersRouter
+  .get('/', (req, res) => {
+    const allUsers = controller.getAllUsers(req.query);
+    res.send(allUsers);
+  })
+  .post('/', validateSchema(addUserSchema), async (req, res) => {
+    const { status, message } = await controller.addUser(req.body);
+    res.status(status).send(JSON.stringify({ message }));
+  });
 
 usersRouter
   .route('/:id')

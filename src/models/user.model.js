@@ -2,6 +2,7 @@ export default (sequelize, Sequelize) => {
   const User = sequelize.define('user', {
     id: {
       type: Sequelize.STRING,
+      primaryKey: true,
     },
     login: {
       type: Sequelize.STRING,
@@ -10,7 +11,7 @@ export default (sequelize, Sequelize) => {
       type: Sequelize.STRING,
     },
     age: {
-      type: Sequelize.NUMBER,
+      type: Sequelize.INTEGER,
     },
     isDeleted: {
       type: Sequelize.BOOLEAN,
