@@ -2,20 +2,38 @@ import crypto from 'crypto';
 import db from '../models/index.js';
 
 const UsersDB = db.users;
-// const Op = db.Sequelize.Op;
+const Op = db.Sequelize.Op;
 let users = [];
 
-const getAllUsers = (queryParams) => {
-  const { loginSubstring, limit } = queryParams;
-  const isAutoSuggestRequest = loginSubstring && loginSubstring.length && limit && Number.isInteger(+limit);
+const getAllUsers = async (queryParams) => {
+  try {
+    const { loginSubstring, limit } = queryParams;
+    const isAutoSuggest = loginSubstring && loginSubstring.length && limit && Number.isInteger(+limit);
+    const condition = isAutoSuggest
+      ? {
+          isDeleted: { [Op.eq]: false },
+          login: { [Op.substring]: loginSubstring },
+        }
+      : { isDeleted: { [Op.eq]: false } };
 
-  const activeUsers = users.filter((user) => !user.isDeleted);
+    const users = await UsersDB.findAll({
+      limit: isAutoSuggest ? limit : undefined,
+      attributes: ['id', 'login', 'age'],
+      where: condition,
+    });
 
-  if (isAutoSuggestRequest) {
-    const filteredUsers = activeUsers.filter((user) => user.login.includes(loginSubstring)).slice(0, +limit);
-    return filteredUsers;
-  } else {
-    return activeUsers;
+    return { status: 200, users };
+  } catch (error) {
+    return { status: 500, users };
+  }
+};
+
+const addUser = async (data) => {
+  try {
+    const newUser = await UsersDB.create({ ...data, isDeleted: false, id: crypto.randomUUID() });
+    return { status: 201, message: `User ${newUser.dataValues.login} with id ${newUser.dataValues.id} has been added successfully.` };
+  } catch (error) {
+    return { status: 500, message: error?.message || 'Cannot add a new user.' };
   }
 };
 
@@ -27,15 +45,6 @@ const getUserById = (req, res) => {
     res.status(404).send(`User with the id ${id} is not found.`);
   } else {
     res.send(targetUser);
-  }
-};
-
-const addUser = async (data) => {
-  try {
-    const newUser = await UsersDB.create({ ...data, isDeleted: false, id: crypto.randomUUID() });
-    return { status: 201, message: `User ${newUser.dataValues.login} has been added.` };
-  } catch (error) {
-    return { status: 500, message: error?.message || 'Cannot add a new user.' };
   }
 };
 
