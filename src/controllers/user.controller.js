@@ -47,18 +47,17 @@ const getUserById = async (userId) => {
     }
     return user;
   } catch (error) {
-    throw new Error(error?.message || 'Cannot find a user.');
+    throw new Error(error?.message || `Cannot find user ${userId}`);
   }
 };
 
-const deleteUserById = (req, res) => {
-  const { id } = req.params;
-
-  users = users.map((user) => {
-    return user.id === id ? { ...user, isDeleted: true } : user;
-  });
-
-  res.send(`User with the id ${id} has been deleted.`);
+const deleteUserById = async (userId) => {
+  try {
+    await UsersDB.destroy({ where: { id: userId } });
+    return userId;
+  } catch (error) {
+    throw new Error(error?.message || `Cannot delete user ${userId}`);
+  }
 };
 
 const updateUserById = (req, res) => {

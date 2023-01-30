@@ -1,12 +1,9 @@
 import express from 'express';
 import { usersRouter } from './routes/index.js';
-import { SERVER_PORT, CORS_OPTIONS } from './config/index.js';
-import cors from 'cors';
+import { SERVER_PORT } from './config/index.js';
 import db from './models/index.js';
 
 const app = express();
-
-app.use(cors(CORS_OPTIONS));
 
 app.use(express.json());
 

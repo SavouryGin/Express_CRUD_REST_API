@@ -1,5 +1,5 @@
 import express from 'express';
-import controller from '../controllers/users.js';
+import controller from '../controllers/user.controller.js';
 import validateSchema from '../validators/validate-schema.js';
 import addUserSchema from '../validators/add-user-validation-schema.js';
 import updateUserSchema from '../validators/update-user-validation-schema.js';
@@ -29,5 +29,11 @@ usersRouter
       .then((user) => res.status(200).send(user))
       .catch((error) => res.status(404).send({ message: error?.message }));
   })
-  .delete(controller.deleteUserById)
+  .delete((req, res) => {
+    const { id } = req.params;
+    controller
+      .deleteUserById(id)
+      .then((userId) => res.status(200).send({ message: `User ${userId} has been deleted successfully.` }))
+      .catch((error) => res.status(500).send({ message: error?.message }));
+  })
   .patch(validateSchema(updateUserSchema), controller.updateUserById);

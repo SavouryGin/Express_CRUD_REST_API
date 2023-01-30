@@ -1,11 +1,6 @@
 // Environment variables and configuration related stuff
 export const SERVER_PORT = 5000;
 
-export const CORS_OPTIONS = {
-  origin: 'http://localhost:5432',
-};
-
-// Database configuration
 export const DB_CONFIG = {
   HOST: 'localhost',
   USER: 'postgres',
