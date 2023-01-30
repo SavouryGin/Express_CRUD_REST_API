@@ -11,40 +11,43 @@ const getAllUsers = async (queryParams) => {
     const isAutoSuggest = loginSubstring && loginSubstring.length && limit && Number.isInteger(+limit);
     const condition = isAutoSuggest
       ? {
-          isDeleted: { [Op.eq]: false },
+          isDeleted: false,
           login: { [Op.substring]: loginSubstring },
         }
-      : { isDeleted: { [Op.eq]: false } };
+      : { isDeleted: false };
 
-    const users = await UsersDB.findAll({
+    return await UsersDB.findAll({
       limit: isAutoSuggest ? limit : undefined,
       attributes: ['id', 'login', 'age'],
       where: condition,
     });
-
-    return { status: 200, users };
   } catch (error) {
-    return { status: 500, users };
+    throw new Error(error?.message || 'Cannot find users.');
   }
 };
 
 const addUser = async (data) => {
   try {
     const newUser = await UsersDB.create({ ...data, isDeleted: false, id: crypto.randomUUID() });
-    return { status: 201, message: `User ${newUser.dataValues.login} with id ${newUser.dataValues.id} has been added successfully.` };
+    return newUser.dataValues.id;
   } catch (error) {
-    return { status: 500, message: error?.message || 'Cannot add a new user.' };
+    throw new Error(error?.message || 'Cannot add a new user.');
   }
 };
 
-const getUserById = (req, res) => {
-  const { id } = req.params;
-  const targetUser = users.find((user) => user.id === id && !user.isDeleted);
+const getUserById = async (userId) => {
+  try {
+    const user = await UsersDB.findOne({
+      where: { id: userId, isDeleted: false },
+      attributes: ['id', 'login', 'age'],
+    });
 
-  if (!targetUser) {
-    res.status(404).send(`User with the id ${id} is not found.`);
-  } else {
-    res.send(targetUser);
+    if (!user) {
+      throw new Error(`User ${userId} does not exist in the database`);
+    }
+    return user;
+  } catch (error) {
+    throw new Error(error?.message || 'Cannot find a user.');
   }
 };
 

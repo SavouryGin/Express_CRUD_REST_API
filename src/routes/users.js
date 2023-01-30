@@ -7,17 +7,27 @@ import updateUserSchema from '../validators/update-user-validation-schema.js';
 export const usersRouter = express.Router();
 
 usersRouter
-  .get('/', async (req, res) => {
-    const { status, users } = await controller.getAllUsers(req.query);
-    res.status(status).send(users);
+  .get('/', (req, res) => {
+    controller
+      .getAllUsers(req.query)
+      .then((users) => res.status(200).send(users))
+      .catch((error) => res.status(404).send({ message: error?.message }));
   })
-  .post('/', validateSchema(addUserSchema), async (req, res) => {
-    const { status, message } = await controller.addUser(req.body);
-    res.status(status).send({ message });
+  .post('/', validateSchema(addUserSchema), (req, res) => {
+    controller
+      .addUser(req.body)
+      .then((userId) => res.status(200).send({ message: `User ${userId} has been added successfully.` }))
+      .catch((error) => res.status(404).send({ message: error?.message }));
   });
 
 usersRouter
   .route('/:id')
-  .get(controller.getUserById)
+  .get((req, res) => {
+    const { id } = req.params;
+    controller
+      .getUserById(id)
+      .then((user) => res.status(200).send(user))
+      .catch((error) => res.status(404).send({ message: error?.message }));
+  })
   .delete(controller.deleteUserById)
   .patch(validateSchema(updateUserSchema), controller.updateUserById);
