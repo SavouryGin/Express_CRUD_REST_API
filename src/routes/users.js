@@ -36,4 +36,11 @@ usersRouter
       .then((userId) => res.status(200).send({ message: `User ${userId} has been deleted successfully.` }))
       .catch((error) => res.status(500).send({ message: error?.message }));
   })
-  .patch(validateSchema(updateUserSchema), controller.updateUserById);
+  .patch(validateSchema(updateUserSchema), (req, res) => {
+    const { id } = req.params;
+    const data = { login: req.body?.login, password: req.body?.password, age: req.body?.age };
+    controller
+      .updateUserById({ userId: id, data })
+      .then((userId) => res.status(200).send({ message: `User ${userId} has been updated successfully.` }))
+      .catch((error) => res.status(500).send({ message: error?.message }));
+  });

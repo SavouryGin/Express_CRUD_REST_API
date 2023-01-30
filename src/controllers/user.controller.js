@@ -3,7 +3,6 @@ import db from '../models/index.js';
 
 const UsersDB = db.users;
 const Op = db.Sequelize.Op;
-let users = [];
 
 const getAllUsers = async (queryParams) => {
   try {
@@ -60,29 +59,16 @@ const deleteUserById = async (userId) => {
   }
 };
 
-const updateUserById = (req, res) => {
-  const { id } = req.params;
-  const { login, password, age, isDeleted } = req.body;
-
-  const targetUser = users.find((item) => item.id === id);
-
-  if (!targetUser) {
-    res.status(404).send(`User with the id ${id} is not found.`);
+const updateUserById = async ({ userId, data }) => {
+  try {
+    const result = await UsersDB.update(data, { where: { id: userId } });
+    if (!result[0]) {
+      throw new Error(`User ${userId} does not exist in the database`);
+    }
+    return userId;
+  } catch (error) {
+    throw new Error(error?.message || `Cannot update user ${userId}`);
   }
-
-  const updatedUser = {
-    ...targetUser,
-    login: login || targetUser.login,
-    password: password || targetUser.password,
-    age: age || targetUser.age,
-    isDeleted: isDeleted || targetUser.isDeleted,
-  };
-
-  users = users.map((user) => {
-    return user.id === id ? updatedUser : user;
-  });
-
-  res.send(`User with the id ${id} has been updated.`);
 };
 
 const usersController = {
