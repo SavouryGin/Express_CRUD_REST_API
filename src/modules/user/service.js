@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 
 export default class UsersService {
   constructor(model, operators) {
@@ -29,7 +30,8 @@ export default class UsersService {
 
   async addUser(data) {
     try {
-      const newUser = await this.model.create({ ...data, isDeleted: false, id: crypto.randomUUID() });
+      const preparedData = await this.prepareUserData(data);
+      const newUser = await this.model.create(preparedData);
       return newUser.dataValues.id;
     } catch (error) {
       throw new Error(error?.message || 'Cannot add a new user.');
@@ -74,5 +76,12 @@ export default class UsersService {
     } catch (error) {
       throw new Error(error?.message || `Cannot update user ${userId}`);
     }
+  }
+
+  async prepareUserData(data) {
+    const newId = crypto.randomUUID();
+    const hashedPwd = await bcrypt.hash(data.password, 13);
+
+    return { ...data, isDeleted: false, id: newId, password: hashedPwd };
   }
 }

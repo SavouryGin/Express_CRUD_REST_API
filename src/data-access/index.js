@@ -20,6 +20,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+// Create tables in the database
 db.users = createUserModel(sequelize, Sequelize);
 
 export default db;
