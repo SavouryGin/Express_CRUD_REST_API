@@ -1,18 +1,23 @@
 import express from 'express';
-import service from './service.js';
+import UsersService from './service.js';
 import validateSchema from '../../helpers/validate-schema.js';
 import validator from './validator.js';
+import db from '../../data-access/index.js';
 
+const model = db.users;
+const operators = db.Sequelize.Op;
+const service = new UsersService(model, operators);
 const router = express.Router();
 
 router
-  .get('/', (req, res) => {
+  .route('/')
+  .get((req, res) => {
     service
       .getAllUsers(req.query)
       .then((users) => res.status(200).send(users))
       .catch((error) => res.status(404).send({ message: error?.message }));
   })
-  .post('/', validateSchema(validator.add), (req, res) => {
+  .post(validateSchema(validator.add), (req, res) => {
     service
       .addUser(req.body)
       .then((userId) => res.status(200).send({ message: `User ${userId} has been added successfully.` }))
