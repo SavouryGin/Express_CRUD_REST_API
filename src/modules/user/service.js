@@ -24,7 +24,7 @@ export default class UsersService {
         where: condition,
       });
     } catch (error) {
-      throw new Error(error?.message || 'Cannot find users.');
+      throw new Error(error?.message || 'getAllUsers() error');
     }
   }
 
@@ -34,7 +34,7 @@ export default class UsersService {
       const newUser = await this.model.create(preparedData);
       return newUser.dataValues.id;
     } catch (error) {
-      throw new Error(error?.message || 'Cannot add a new user.');
+      throw new Error(error?.message || 'addUser() error');
     }
   }
 
@@ -50,7 +50,7 @@ export default class UsersService {
       }
       return user;
     } catch (error) {
-      throw new Error(error?.message || `Cannot find user ${userId}`);
+      throw new Error(error?.message || 'getUserById() error');
     }
   }
 
@@ -62,7 +62,7 @@ export default class UsersService {
       }
       return userId;
     } catch (error) {
-      throw new Error(error?.message || `Cannot delete user ${userId}`);
+      throw new Error(error?.message || 'deleteUserById() error');
     }
   }
 
@@ -74,7 +74,7 @@ export default class UsersService {
       }
       return userId;
     } catch (error) {
-      throw new Error(error?.message || `Cannot update user ${userId}`);
+      throw new Error(error?.message || 'updateUserById() error');
     }
   }
 

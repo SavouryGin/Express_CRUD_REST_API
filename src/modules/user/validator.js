@@ -12,9 +12,9 @@ const update = Joi.object().keys({
   age: Joi.number().integer().min(4).max(130),
 });
 
-const usersValidator = {
+const userValidator = {
   add,
   update,
 };
 
-export default usersValidator;
+export default userValidator;
