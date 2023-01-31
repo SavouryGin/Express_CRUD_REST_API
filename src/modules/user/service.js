@@ -54,7 +54,10 @@ export default class UsersService {
 
   async deleteUserById(userId) {
     try {
-      await this.model.destroy({ where: { id: userId } });
+      const result = await this.model.update({ isDeleted: true }, { where: { id: userId } });
+      if (!result[0]) {
+        throw new Error(`User ${userId} does not exist in the database`);
+      }
       return userId;
     } catch (error) {
       throw new Error(error?.message || `Cannot delete user ${userId}`);
