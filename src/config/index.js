@@ -1,16 +1,20 @@
-// Environment variables and configuration related stuff
-export const SERVER_PORT = 5000;
+import dotenv from 'dotenv';
 
-export const DB_CONFIG = {
-  HOST: 'localhost',
-  USER: 'postgres',
-  PASSWORD: 'Gin20062330',
-  DB: 'node_js_gmp_2023_db',
-  dialect: 'postgres',
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
+dotenv.config();
+
+export default {
+  port: process.env.PORT,
+  db: {
+    HOST: process.env.DB_HOST,
+    USER: process.env.DB_USER,
+    PASSWORD: process.env.DB_PASSWORD,
+    DB: process.env.DB_NAME,
+    dialect: 'postgres',
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
   },
 };

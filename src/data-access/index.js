@@ -1,17 +1,17 @@
-import { DB_CONFIG } from '../config/index.js';
+import config from '../config/index.js';
 import Sequelize from 'sequelize';
 import createUserModel from '../modules/user/model.js';
 
-const sequelize = new Sequelize(DB_CONFIG.DB, DB_CONFIG.USER, DB_CONFIG.PASSWORD, {
-  host: DB_CONFIG.HOST,
-  dialect: DB_CONFIG.dialect,
+const sequelize = new Sequelize(config.db.DB, config.db.USER, config.db.PASSWORD, {
+  host: config.db.HOST,
+  dialect: config.db.dialect,
   operatorsAliases: false,
 
   pool: {
-    max: DB_CONFIG.pool.max,
-    min: DB_CONFIG.pool.min,
-    acquire: DB_CONFIG.pool.acquire,
-    idle: DB_CONFIG.pool.idle,
+    max: config.db.pool.max,
+    min: config.db.pool.min,
+    acquire: config.db.pool.acquire,
+    idle: config.db.pool.idle,
   },
 });
 
