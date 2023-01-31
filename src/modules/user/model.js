@@ -1,4 +1,4 @@
-export default (sequelize, Sequelize) => {
+const createUserModel = (sequelize, Sequelize) => {
   const User = sequelize.define('user', {
     id: {
       type: Sequelize.STRING,
@@ -20,3 +20,5 @@ export default (sequelize, Sequelize) => {
 
   return User;
 };
+
+export default createUserModel;

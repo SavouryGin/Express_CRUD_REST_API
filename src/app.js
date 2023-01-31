@@ -1,7 +1,7 @@
 import express from 'express';
-import { usersRouter } from './routes/index.js';
+import usersRouter from './modules/user/router.js';
 import { SERVER_PORT } from './config/index.js';
-import db from './models/index.js';
+import db from './data-access/index.js';
 
 const app = express();
 
@@ -11,16 +11,8 @@ app.use('/users', usersRouter);
 
 db.sequelize
   .sync()
-  .then(() => {
-    console.log('The database has been synced.');
-  })
-  .catch((err) => {
-    console.log('Failed to sync the database: ' + err.message);
-  });
-
-app.get('/', (req, res) => {
-  res.send('Welcome to the CRUD service!');
-});
+  .then(() => console.log('The database has been synced.'))
+  .catch((error) => console.error('Failed to sync the database: ' + error.message));
 
 app.listen(SERVER_PORT, () => {
   console.log(`Server is running on http://localhost:${SERVER_PORT}`);

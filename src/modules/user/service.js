@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import db from '../models/index.js';
+import db from '../../data-access/index.js';
 
 const UsersDB = db.users;
 const Op = db.Sequelize.Op;

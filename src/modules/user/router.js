@@ -1,46 +1,47 @@
 import express from 'express';
-import controller from '../controllers/user.controller.js';
-import validateSchema from '../validators/validate-schema.js';
-import addUserSchema from '../validators/add-user-validation-schema.js';
-import updateUserSchema from '../validators/update-user-validation-schema.js';
+import service from './service.js';
+import validateSchema from '../../helpers/validate-schema.js';
+import validator from './validator.js';
 
-export const usersRouter = express.Router();
+const router = express.Router();
 
-usersRouter
+router
   .get('/', (req, res) => {
-    controller
+    service
       .getAllUsers(req.query)
       .then((users) => res.status(200).send(users))
       .catch((error) => res.status(404).send({ message: error?.message }));
   })
-  .post('/', validateSchema(addUserSchema), (req, res) => {
-    controller
+  .post('/', validateSchema(validator.add), (req, res) => {
+    service
       .addUser(req.body)
       .then((userId) => res.status(200).send({ message: `User ${userId} has been added successfully.` }))
       .catch((error) => res.status(404).send({ message: error?.message }));
   });
 
-usersRouter
+router
   .route('/:id')
   .get((req, res) => {
     const { id } = req.params;
-    controller
+    service
       .getUserById(id)
       .then((user) => res.status(200).send(user))
       .catch((error) => res.status(404).send({ message: error?.message }));
   })
   .delete((req, res) => {
     const { id } = req.params;
-    controller
+    service
       .deleteUserById(id)
       .then((userId) => res.status(200).send({ message: `User ${userId} has been deleted successfully.` }))
       .catch((error) => res.status(500).send({ message: error?.message }));
   })
-  .patch(validateSchema(updateUserSchema), (req, res) => {
+  .patch(validateSchema(validator.update), (req, res) => {
     const { id } = req.params;
     const data = { login: req.body?.login, password: req.body?.password, age: req.body?.age };
-    controller
+    service
       .updateUserById({ userId: id, data })
       .then((userId) => res.status(200).send({ message: `User ${userId} has been updated successfully.` }))
       .catch((error) => res.status(500).send({ message: error?.message }));
   });
+
+export default router;

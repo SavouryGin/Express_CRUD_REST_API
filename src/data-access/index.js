@@ -1,6 +1,6 @@
 import { DB_CONFIG } from '../config/index.js';
 import Sequelize from 'sequelize';
-import userModel from './user.model.js';
+import createUserModel from '../modules/user/model.js';
 
 const sequelize = new Sequelize(DB_CONFIG.DB, DB_CONFIG.USER, DB_CONFIG.PASSWORD, {
   host: DB_CONFIG.HOST,
@@ -20,6 +20,6 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.users = userModel(sequelize, Sequelize);
+db.users = createUserModel(sequelize, Sequelize);
 
 export default db;
