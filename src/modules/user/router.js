@@ -13,13 +13,13 @@ router
   .route('/')
   .get((req, res) => {
     service
-      .getAllUsers(req.query)
+      .getAll(req.query)
       .then((users) => res.status(200).send(users))
       .catch((error) => res.status(404).send({ message: error?.message }));
   })
   .post(validateSchema(validator.add), (req, res) => {
     service
-      .addUser(req.body)
+      .add(req.body)
       .then((userId) => res.status(200).send({ message: `User ${userId} has been added successfully.` }))
       .catch((error) => res.status(404).send({ message: error?.message }));
   });
@@ -29,14 +29,14 @@ router
   .get((req, res) => {
     const { id } = req.params;
     service
-      .getUserById(id)
+      .getById(id)
       .then((user) => res.status(200).send(user))
       .catch((error) => res.status(404).send({ message: error?.message }));
   })
   .delete((req, res) => {
     const { id } = req.params;
     service
-      .deleteUserById(id)
+      .deleteById(id)
       .then((userId) => res.status(200).send({ message: `User ${userId} has been deleted successfully.` }))
       .catch((error) => res.status(500).send({ message: error?.message }));
   })
@@ -44,7 +44,7 @@ router
     const { id } = req.params;
     const data = { login: req.body?.login, password: req.body?.password, age: req.body?.age };
     service
-      .updateUserById({ userId: id, data })
+      .updateById({ userId: id, data })
       .then((userId) => res.status(200).send({ message: `User ${userId} has been updated successfully.` }))
       .catch((error) => res.status(500).send({ message: error?.message }));
   });

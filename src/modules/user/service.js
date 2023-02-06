@@ -7,7 +7,7 @@ export default class UsersService {
     this.Op = operators;
   }
 
-  async getAllUsers(queryParams) {
+  async getAll(queryParams) {
     try {
       const { loginSubstring, limit } = queryParams;
       const isAutoSuggest = loginSubstring && loginSubstring.length && limit && Number.isInteger(+limit);
@@ -24,21 +24,21 @@ export default class UsersService {
         where: condition,
       });
     } catch (error) {
-      throw new Error(error?.message || 'getAllUsers() error');
+      throw new Error(error?.message || 'getAll() error');
     }
   }
 
-  async addUser(data) {
+  async add(data) {
     try {
-      const preparedData = await this.prepareUserData(data);
+      const preparedData = await this.prepareData(data);
       const newUser = await this.model.create(preparedData);
       return newUser.dataValues.id;
     } catch (error) {
-      throw new Error(error?.message || 'addUser() error');
+      throw new Error(error?.message || 'add() error');
     }
   }
 
-  async getUserById(userId) {
+  async getById(userId) {
     try {
       const user = await this.model.findOne({
         where: { id: userId, isDeleted: false },
@@ -50,11 +50,11 @@ export default class UsersService {
       }
       return user;
     } catch (error) {
-      throw new Error(error?.message || 'getUserById() error');
+      throw new Error(error?.message || 'getById() error');
     }
   }
 
-  async deleteUserById(userId) {
+  async deleteById(userId) {
     try {
       const result = await this.model.update({ isDeleted: true }, { where: { id: userId } });
       if (!result[0]) {
@@ -62,11 +62,11 @@ export default class UsersService {
       }
       return userId;
     } catch (error) {
-      throw new Error(error?.message || 'deleteUserById() error');
+      throw new Error(error?.message || 'deleteById() error');
     }
   }
 
-  async updateUserById({ userId, data }) {
+  async updateById({ userId, data }) {
     try {
       const result = await this.model.update(data, { where: { id: userId } });
       if (!result[0]) {
@@ -74,11 +74,11 @@ export default class UsersService {
       }
       return userId;
     } catch (error) {
-      throw new Error(error?.message || 'updateUserById() error');
+      throw new Error(error?.message || 'updateById() error');
     }
   }
 
-  async prepareUserData(data) {
+  async prepareData(data) {
     const newId = crypto.randomUUID();
     const hashedPwd = await bcrypt.hash(data.password, 13);
 

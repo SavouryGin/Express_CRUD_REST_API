@@ -12,13 +12,13 @@ router
   .route('/')
   .get((_req, res) => {
     service
-      .getAllGroups()
+      .getAll()
       .then((groups) => res.status(200).send(groups))
       .catch((error) => res.status(404).send({ message: error?.message }));
   })
   .post(validateSchema(validator.add), (req, res) => {
     service
-      .addGroup(req.body)
+      .add(req.body)
       .then((groupId) => res.status(200).send({ message: `Group ${groupId} has been added successfully.` }))
       .catch((error) => res.status(404).send({ message: error?.message }));
   });
@@ -28,14 +28,14 @@ router
   .get((req, res) => {
     const { id } = req.params;
     service
-      .getGroupById(id)
+      .getById(id)
       .then((group) => res.status(200).send(group))
       .catch((error) => res.status(404).send({ message: error?.message }));
   })
   .delete((req, res) => {
     const { id } = req.params;
     service
-      .deleteGroupById(id)
+      .deleteById(id)
       .then((groupId) => res.status(200).send({ message: `Group ${groupId} has been deleted successfully.` }))
       .catch((error) => res.status(500).send({ message: error?.message }));
   })
@@ -43,7 +43,7 @@ router
     const { id } = req.params;
     const data = { name: req.body?.name, permissions: req.body?.permissions };
     service
-      .updateUserById({ groupId: id, data })
+      .updateById({ groupId: id, data })
       .then((groupId) => res.status(200).send({ message: `Group ${groupId} has been updated successfully.` }))
       .catch((error) => res.status(500).send({ message: error?.message }));
   });

@@ -5,27 +5,27 @@ export default class GroupsService {
     this.model = model;
   }
 
-  async getAllGroups() {
+  async getAll() {
     try {
       return await this.model.findAll({
         attributes: ['id', 'name', 'permissions'],
       });
     } catch (error) {
-      throw new Error(error?.message || 'getAllGroups() error');
+      throw new Error(error?.message || 'getAll() error');
     }
   }
 
-  async addGroup(data) {
+  async add(data) {
     try {
-      const preparedData = await this.prepareGroupData(data);
+      const preparedData = await this.prepareData(data);
       const newGroup = await this.model.create(preparedData);
       return newGroup.dataValues.id;
     } catch (error) {
-      throw new Error(error?.message || 'addGroup() error');
+      throw new Error(error?.message || 'add() error');
     }
   }
 
-  async getGroupById(groupId) {
+  async getById(groupId) {
     try {
       const group = await this.model.findOne({
         where: { id: groupId },
@@ -37,23 +37,24 @@ export default class GroupsService {
       }
       return group;
     } catch (error) {
-      throw new Error(error?.message || 'getGroupById() error');
+      throw new Error(error?.message || 'getById() error');
     }
   }
 
-  async deleteGroupById(groupId) {
+  async deleteById(groupId) {
     try {
       const result = await this.model.destroy({ where: { id: groupId } });
-      if (!result[0]) {
+      if (result === 1) {
+        return groupId;
+      } else {
         throw new Error(`Group ${groupId} does not exist in the database`);
       }
-      return groupId;
     } catch (error) {
-      throw new Error(error?.message || 'deleteGroupById() error');
+      throw new Error(error?.message || 'deleteById() error');
     }
   }
 
-  async updateGroupById({ groupId, data }) {
+  async updateById({ groupId, data }) {
     try {
       const result = await this.model.update(data, { where: { id: groupId } });
       if (!result[0]) {
@@ -61,11 +62,11 @@ export default class GroupsService {
       }
       return groupId;
     } catch (error) {
-      throw new Error(error?.message || 'updateGroupById() error');
+      throw new Error(error?.message || 'updateById() error');
     }
   }
 
-  async prepareGroupData(data) {
+  async prepareData(data) {
     const newId = crypto.randomUUID();
 
     return { ...data, id: newId };
