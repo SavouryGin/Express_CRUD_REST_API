@@ -1,9 +1,8 @@
 import crypto from 'crypto';
 
 export default class GroupsService {
-  constructor(model, operators) {
+  constructor(model) {
     this.model = model;
-    this.Op = operators;
   }
 
   async getAllGroups() {

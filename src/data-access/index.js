@@ -1,6 +1,7 @@
 import config from '../config/index.js';
 import Sequelize from 'sequelize';
 import createUserModel from '../modules/user/model.js';
+import createGroupModel from '../modules/group/model.js';
 
 const sequelize = new Sequelize(config.db.DB, config.db.USER, config.db.PASSWORD, {
   host: config.db.HOST,
@@ -21,5 +22,6 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.users = createUserModel(sequelize, Sequelize);
+db.groups = createGroupModel(sequelize, Sequelize);
 
 export default db;
