@@ -17,6 +17,14 @@ const createGroupsModel = (sequelize, Sequelize) => {
     },
   });
 
+  Groups.associate = (models) => {
+    Groups.belongsToMany(models.Users, {
+      through: 'UsersToGroups',
+      as: 'users',
+      foreignKey: 'groupId',
+    });
+  };
+
   return Groups;
 };
 
