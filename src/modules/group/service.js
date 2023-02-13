@@ -17,8 +17,8 @@ export default class GroupsService {
 
   async add(data) {
     try {
-      const preparedData = await this.prepareData(data);
-      const newGroup = await this.model.create(preparedData);
+      const newId = crypto.randomUUID();
+      const newGroup = await this.model.create({ ...data, id: newId });
       return newGroup.dataValues.id;
     } catch (error) {
       throw new Error(error?.message || 'add() error');
@@ -64,11 +64,5 @@ export default class GroupsService {
     } catch (error) {
       throw new Error(error?.message || 'updateById() error');
     }
-  }
-
-  async prepareData(data) {
-    const newId = crypto.randomUUID();
-
-    return { ...data, id: newId };
   }
 }

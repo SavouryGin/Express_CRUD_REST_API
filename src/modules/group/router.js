@@ -4,7 +4,7 @@ import validateSchema from '../../helpers/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 
-const model = db.groups;
+const model = db.Groups;
 const service = new GroupsService(model);
 const router = express.Router();
 

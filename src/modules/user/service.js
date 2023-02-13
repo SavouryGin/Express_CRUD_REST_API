@@ -1,5 +1,5 @@
-import crypto from 'crypto';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
 export default class UsersService {
   constructor(model, operators) {
@@ -79,9 +79,9 @@ export default class UsersService {
   }
 
   async prepareData(data) {
-    const newId = crypto.randomUUID();
     const hashedPwd = await bcrypt.hash(data.password, 13);
+    const newId = crypto.randomUUID();
 
-    return { ...data, isDeleted: false, id: newId, password: hashedPwd };
+    return { ...data, id: newId, isDeleted: false, password: hashedPwd };
   }
 }
