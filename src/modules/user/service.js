@@ -2,8 +2,9 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
 export default class UsersService {
-  constructor(model, operators) {
-    this.model = model;
+  constructor({ userModel, groupModel, operators }) {
+    this.userModel = userModel;
+    this.groupModel = groupModel;
     this.Op = operators;
   }
 
@@ -18,10 +19,21 @@ export default class UsersService {
           }
         : { isDeleted: false };
 
-      return await this.model.findAll({
+      const includeOptions = [
+        {
+          model: this.groupModel,
+          as: 'groups',
+          required: false,
+          attributes: ['id', 'name', 'permissions'],
+          through: { attributes: [] },
+        },
+      ];
+
+      return await this.userModel.findAll({
         limit: isAutoSuggest ? limit : undefined,
         attributes: ['id', 'login', 'age'],
         where: condition,
+        include: includeOptions,
       });
     } catch (error) {
       throw new Error(error?.message || 'getAll() error');
@@ -31,7 +43,7 @@ export default class UsersService {
   async add(data) {
     try {
       const preparedData = await this.prepareData(data);
-      const newUser = await this.model.create(preparedData);
+      const newUser = await this.userModel.create(preparedData);
       return newUser.dataValues.id;
     } catch (error) {
       throw new Error(error?.message || 'add() error');
@@ -40,7 +52,7 @@ export default class UsersService {
 
   async getById(userId) {
     try {
-      const user = await this.model.findOne({
+      const user = await this.userModel.findOne({
         where: { id: userId, isDeleted: false },
         attributes: ['id', 'login', 'age'],
       });
@@ -56,7 +68,7 @@ export default class UsersService {
 
   async deleteById(userId) {
     try {
-      const result = await this.model.update({ isDeleted: true }, { where: { id: userId } });
+      const result = await this.userModel.update({ isDeleted: true }, { where: { id: userId } });
       if (!result[0]) {
         throw new Error(`User ${userId} does not exist in the database`);
       }
@@ -68,7 +80,7 @@ export default class UsersService {
 
   async updateById({ userId, data }) {
     try {
-      const result = await this.model.update(data, { where: { id: userId } });
+      const result = await this.userModel.update(data, { where: { id: userId } });
       if (!result[0]) {
         throw new Error(`User ${userId} does not exist in the database`);
       }

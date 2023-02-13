@@ -1,5 +1,5 @@
-const createGroupsModel = (sequelize, Sequelize) => {
-  const Groups = sequelize.define('Groups', {
+export default (sequelize, Sequelize) => {
+  const Group = sequelize.define('Group', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -17,15 +17,5 @@ const createGroupsModel = (sequelize, Sequelize) => {
     },
   });
 
-  Groups.associate = (models) => {
-    Groups.belongsToMany(models.Users, {
-      through: 'UsersToGroups',
-      as: 'users',
-      foreignKey: 'groupId',
-    });
-  };
-
-  return Groups;
+  return Group;
 };
-
-export default createGroupsModel;

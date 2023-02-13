@@ -4,9 +4,10 @@ import validateSchema from '../../helpers/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 
-const model = db.Users;
+const userModel = db.User;
+const groupModel = db.Group;
 const operators = db.Sequelize.Op;
-const service = new UsersService(model, operators);
+const service = new UsersService({ userModel, groupModel, operators });
 const router = express.Router();
 
 router
