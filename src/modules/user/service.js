@@ -1,13 +1,23 @@
-import crypto from 'crypto';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
 export default class UsersService {
-  constructor(model, operators) {
-    this.model = model;
+  constructor({ userModel, groupModel, operators }) {
+    this.userModel = userModel;
+    this.groupModel = groupModel;
     this.Op = operators;
+    this.includeOptions = [
+      {
+        model: groupModel,
+        as: 'groups',
+        required: false,
+        attributes: ['id', 'name', 'permissions'],
+        through: { attributes: [] },
+      },
+    ];
   }
 
-  async getAllUsers(queryParams) {
+  async getAll(queryParams) {
     try {
       const { loginSubstring, limit } = queryParams;
       const isAutoSuggest = loginSubstring && loginSubstring.length && limit && Number.isInteger(+limit);
@@ -18,31 +28,33 @@ export default class UsersService {
           }
         : { isDeleted: false };
 
-      return await this.model.findAll({
+      return await this.userModel.findAll({
         limit: isAutoSuggest ? limit : undefined,
         attributes: ['id', 'login', 'age'],
         where: condition,
+        include: this.includeOptions,
       });
     } catch (error) {
-      throw new Error(error?.message || 'getAllUsers() error');
+      throw new Error(error?.message || 'getAll() error');
     }
   }
 
-  async addUser(data) {
+  async add(data) {
     try {
-      const preparedData = await this.prepareUserData(data);
-      const newUser = await this.model.create(preparedData);
+      const preparedData = await this.prepareData(data);
+      const newUser = await this.userModel.create(preparedData);
       return newUser.dataValues.id;
     } catch (error) {
-      throw new Error(error?.message || 'addUser() error');
+      throw new Error(error?.message || 'add() error');
     }
   }
 
-  async getUserById(userId) {
+  async getById(userId) {
     try {
-      const user = await this.model.findOne({
+      const user = await this.userModel.findOne({
         where: { id: userId, isDeleted: false },
         attributes: ['id', 'login', 'age'],
+        include: this.includeOptions,
       });
 
       if (!user) {
@@ -50,38 +62,38 @@ export default class UsersService {
       }
       return user;
     } catch (error) {
-      throw new Error(error?.message || 'getUserById() error');
+      throw new Error(error?.message || 'getById() error');
     }
   }
 
-  async deleteUserById(userId) {
+  async deleteById(userId) {
     try {
-      const result = await this.model.update({ isDeleted: true }, { where: { id: userId } });
+      const result = await this.userModel.update({ isDeleted: true }, { where: { id: userId } });
       if (!result[0]) {
         throw new Error(`User ${userId} does not exist in the database`);
       }
       return userId;
     } catch (error) {
-      throw new Error(error?.message || 'deleteUserById() error');
+      throw new Error(error?.message || 'deleteById() error');
     }
   }
 
-  async updateUserById({ userId, data }) {
+  async updateById({ userId, data }) {
     try {
-      const result = await this.model.update(data, { where: { id: userId } });
+      const result = await this.userModel.update(data, { where: { id: userId } });
       if (!result[0]) {
         throw new Error(`User ${userId} does not exist in the database`);
       }
       return userId;
     } catch (error) {
-      throw new Error(error?.message || 'updateUserById() error');
+      throw new Error(error?.message || 'updateById() error');
     }
   }
 
-  async prepareUserData(data) {
-    const newId = crypto.randomUUID();
+  async prepareData(data) {
     const hashedPwd = await bcrypt.hash(data.password, 13);
+    const newId = crypto.randomUUID();
 
-    return { ...data, isDeleted: false, id: newId, password: hashedPwd };
+    return { ...data, id: newId, isDeleted: false, password: hashedPwd };
   }
 }

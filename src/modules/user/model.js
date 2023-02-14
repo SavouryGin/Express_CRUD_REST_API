@@ -1,24 +1,28 @@
-const createUserModel = (sequelize, Sequelize) => {
-  const User = sequelize.define('user', {
+export default (sequelize, Sequelize) => {
+  const User = sequelize.define('User', {
     id: {
-      type: Sequelize.STRING,
+      allowNull: false,
       primaryKey: true,
+      type: Sequelize.STRING,
     },
     login: {
+      allowNull: false,
       type: Sequelize.STRING,
+      validate: { notEmpty: true, isEmail: true },
     },
     password: {
+      allowNull: false,
       type: Sequelize.STRING,
+      validate: { notEmpty: true },
     },
     age: {
       type: Sequelize.INTEGER,
     },
     isDeleted: {
+      allowNull: false,
       type: Sequelize.BOOLEAN,
     },
   });
 
   return User;
 };
-
-export default createUserModel;
