@@ -1,14 +1,26 @@
 import crypto from 'crypto';
 
 export default class GroupsService {
-  constructor(model) {
-    this.model = model;
+  constructor({ groupModel, userModel, userGroupModel }) {
+    this.groupModel = groupModel;
+    this.userModel = userModel;
+    this.userGroupModel = userGroupModel;
+    this.includeOptions = [
+      {
+        model: userModel,
+        as: 'users',
+        required: false,
+        attributes: ['id', 'login'],
+        through: { attributes: [] },
+      },
+    ];
   }
 
   async getAll() {
     try {
-      return await this.model.findAll({
+      return await this.groupModel.findAll({
         attributes: ['id', 'name', 'permissions'],
+        include: this.includeOptions,
       });
     } catch (error) {
       throw new Error(error?.message || 'getAll() error');
@@ -18,7 +30,7 @@ export default class GroupsService {
   async add(data) {
     try {
       const newId = crypto.randomUUID();
-      const newGroup = await this.model.create({ ...data, id: newId });
+      const newGroup = await this.groupModel.create({ ...data, id: newId });
       return newGroup.dataValues.id;
     } catch (error) {
       throw new Error(error?.message || 'add() error');
@@ -27,9 +39,10 @@ export default class GroupsService {
 
   async getById(groupId) {
     try {
-      const group = await this.model.findOne({
+      const group = await this.groupModel.findOne({
         where: { id: groupId },
         attributes: ['id', 'name', 'permissions'],
+        include: this.includeOptions,
       });
 
       if (!group) {
@@ -43,7 +56,7 @@ export default class GroupsService {
 
   async deleteById(groupId) {
     try {
-      const result = await this.model.destroy({ where: { id: groupId } });
+      const result = await this.groupModel.destroy({ where: { id: groupId } });
       if (result === 1) {
         return groupId;
       } else {
@@ -56,7 +69,7 @@ export default class GroupsService {
 
   async updateById({ groupId, data }) {
     try {
-      const result = await this.model.update(data, { where: { id: groupId } });
+      const result = await this.groupModel.update(data, { where: { id: groupId } });
       if (!result[0]) {
         throw new Error(`Group ${groupId} does not exist in the database`);
       }

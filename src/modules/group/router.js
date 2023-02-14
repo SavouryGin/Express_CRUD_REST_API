@@ -4,8 +4,10 @@ import validateSchema from '../../helpers/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 
-const model = db.Groups;
-const service = new GroupsService(model);
+const groupModel = db.Group;
+const userModel = db.User;
+const userGroupModel = db.UserGroup;
+const service = new GroupsService({ groupModel, userModel, userGroupModel });
 const router = express.Router();
 
 router

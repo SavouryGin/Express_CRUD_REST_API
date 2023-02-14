@@ -2,6 +2,7 @@ import config from '../config/index.js';
 import Sequelize from 'sequelize';
 import UserModel from '../modules/user/model.js';
 import GroupModel from '../modules/group/model.js';
+import UserGroup from '../modules/user-group/model.js';
 
 const sequelize = new Sequelize(config.db.DB, config.db.USER, config.db.PASSWORD, {
   host: config.db.HOST,
@@ -24,6 +25,7 @@ db.sequelize = sequelize;
 // Create tables
 db.User = UserModel(sequelize, Sequelize);
 db.Group = GroupModel(sequelize, Sequelize);
+db.UserGroup = UserGroup(sequelize, Sequelize);
 
 // Make n:n association
 db.User.belongsToMany(db.Group, {

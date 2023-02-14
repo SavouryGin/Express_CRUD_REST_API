@@ -6,6 +6,15 @@ export default class UsersService {
     this.userModel = userModel;
     this.groupModel = groupModel;
     this.Op = operators;
+    this.includeOptions = [
+      {
+        model: groupModel,
+        as: 'groups',
+        required: false,
+        attributes: ['id', 'name', 'permissions'],
+        through: { attributes: [] },
+      },
+    ];
   }
 
   async getAll(queryParams) {
@@ -19,21 +28,11 @@ export default class UsersService {
           }
         : { isDeleted: false };
 
-      const includeOptions = [
-        {
-          model: this.groupModel,
-          as: 'groups',
-          required: false,
-          attributes: ['id', 'name', 'permissions'],
-          through: { attributes: [] },
-        },
-      ];
-
       return await this.userModel.findAll({
         limit: isAutoSuggest ? limit : undefined,
         attributes: ['id', 'login', 'age'],
         where: condition,
-        include: includeOptions,
+        include: this.includeOptions,
       });
     } catch (error) {
       throw new Error(error?.message || 'getAll() error');
@@ -55,6 +54,7 @@ export default class UsersService {
       const user = await this.userModel.findOne({
         where: { id: userId, isDeleted: false },
         attributes: ['id', 'login', 'age'],
+        include: this.includeOptions,
       });
 
       if (!user) {
