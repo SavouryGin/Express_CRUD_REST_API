@@ -56,14 +56,20 @@ export default class GroupsService {
   }
 
   async deleteById(groupId) {
+    const transaction = await this.sequelize.transaction();
     try {
-      const result = await this.groupModel.destroy({ where: { id: groupId } });
-      if (result === 1) {
-        return groupId;
-      } else {
+      const result = await this.groupModel.destroy({ where: { id: groupId } }, { transaction });
+      if (result !== 1) {
         throw new Error(`Group ${groupId} does not exist in the database`);
       }
+
+      // Delete all related records from the userGroupModel
+      await this.userGroupModel.destroy({ where: { groupId } }, { transaction });
+
+      await transaction.commit();
+      return groupId;
     } catch (error) {
+      await transaction.rollback();
       throw new Error(error?.message || 'deleteById() error');
     }
   }
