@@ -4,11 +4,8 @@ import validateSchema from '../../helpers/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 
-const groupModel = db.Group;
-const userModel = db.User;
-const userGroupModel = db.UserGroup;
-const service = new GroupsService({ groupModel, userModel, userGroupModel });
 const router = express.Router();
+const service = new GroupsService({ groupModel: db.Group, userModel: db.User, userGroupModel: db.UserGroup, sequelize: db.sequelize });
 
 router
   .route('/')
@@ -47,6 +44,13 @@ router
     service
       .updateById({ groupId: id, data })
       .then((groupId) => res.status(200).send({ message: `Group ${groupId} has been updated successfully.` }))
+      .catch((error) => res.status(500).send({ message: error?.message }));
+  })
+  .post(validateSchema(validator.addUsers), (req, res) => {
+    const { id } = req.params;
+    service
+      .addUsersToGroup({ groupId: id, userIds: req.body.userIds })
+      .then((groupId) => res.status(200).send({ message: `Users have been added to group ${groupId} successfully.` }))
       .catch((error) => res.status(500).send({ message: error?.message }));
   });
 

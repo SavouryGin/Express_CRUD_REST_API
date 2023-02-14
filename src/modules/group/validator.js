@@ -10,9 +10,14 @@ const update = Joi.object().keys({
   permissions: Joi.array().items(Joi.string().valid('READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES')),
 });
 
+const addUsers = Joi.object().keys({
+  userIds: Joi.array().min(1).items(Joi.string()).required(),
+});
+
 const groupValidator = {
   add,
   update,
+  addUsers,
 };
 
 export default groupValidator;

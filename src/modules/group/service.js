@@ -1,10 +1,11 @@
 import crypto from 'crypto';
 
 export default class GroupsService {
-  constructor({ groupModel, userModel, userGroupModel }) {
+  constructor({ groupModel, userModel, userGroupModel, sequelize }) {
     this.groupModel = groupModel;
     this.userModel = userModel;
     this.userGroupModel = userGroupModel;
+    this.sequelize = sequelize;
     this.includeOptions = [
       {
         model: userModel,
@@ -76,6 +77,21 @@ export default class GroupsService {
       return groupId;
     } catch (error) {
       throw new Error(error?.message || 'updateById() error');
+    }
+  }
+
+  async addUsersToGroup({ groupId, userIds }) {
+    const transaction = await this.sequelize.transaction();
+    try {
+      for (const userId of userIds) {
+        await this.userGroupModel.create({ userId, groupId }, { transaction });
+      }
+
+      await transaction.commit();
+      return groupId;
+    } catch (error) {
+      await transaction.rollback();
+      throw new Error(error?.message || 'addUsersToGroup() error');
     }
   }
 }
