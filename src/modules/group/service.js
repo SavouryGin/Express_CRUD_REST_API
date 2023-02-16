@@ -29,11 +29,14 @@ export default class GroupsService {
   }
 
   async add(data) {
+    const transaction = await this.sequelize.transaction();
     try {
       const newId = crypto.randomUUID();
-      const newGroup = await this.groupModel.create({ ...data, id: newId });
+      const newGroup = await this.groupModel.create({ ...data, id: newId }, { transaction });
+      await transaction.commit();
       return newGroup.dataValues.id;
     } catch (error) {
+      await transaction.rollback();
       throw new Error(error?.message || 'add() error');
     }
   }
@@ -60,6 +63,7 @@ export default class GroupsService {
     try {
       const result = await this.groupModel.destroy({ where: { id: groupId } }, { transaction });
       if (result !== 1) {
+        await transaction.rollback();
         throw new Error(`Group ${groupId} does not exist in the database`);
       }
 
@@ -75,13 +79,18 @@ export default class GroupsService {
   }
 
   async updateById({ groupId, data }) {
+    const transaction = await this.sequelize.transaction();
     try {
-      const result = await this.groupModel.update(data, { where: { id: groupId } });
+      const result = await this.groupModel.update(data, { where: { id: groupId } }, { transaction });
       if (!result[0]) {
+        await transaction.rollback();
         throw new Error(`Group ${groupId} does not exist in the database`);
       }
+
+      await transaction.commit();
       return groupId;
     } catch (error) {
+      await transaction.rollback();
       throw new Error(error?.message || 'updateById() error');
     }
   }

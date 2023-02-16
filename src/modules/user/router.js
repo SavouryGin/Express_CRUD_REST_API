@@ -5,7 +5,7 @@ import validator from './validator.js';
 import db from '../../data-access/index.js';
 
 const router = express.Router();
-const service = new UsersService({ userModel: db.User, groupModel: db.Group, operators: db.Sequelize.Op });
+const service = new UsersService({ userModel: db.User, groupModel: db.Group, operators: db.Sequelize.Op, sequelize: db.sequelize });
 
 router
   .route('/')
