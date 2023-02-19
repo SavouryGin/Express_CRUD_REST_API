@@ -1,6 +1,6 @@
 import express from 'express';
 import UsersService from './service.js';
-import validateSchema from '../../helpers/validate-schema.js';
+import validateSchema from '../../utils/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 
