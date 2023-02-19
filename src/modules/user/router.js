@@ -3,6 +3,7 @@ import UsersService from './service.js';
 import validateSchema from '../../utils/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
+import logger from '../../utils/logger.js';
 
 const router = express.Router();
 const service = new UsersService({ userModel: db.User, groupModel: db.Group, operators: db.Sequelize.Op, sequelize: db.sequelize });
@@ -12,8 +13,14 @@ router
   .get((req, res) => {
     service
       .getAll(req.query)
-      .then((users) => res.status(200).send(users))
-      .catch((error) => res.status(404).send({ message: error?.message }));
+      .then((users) => {
+        logger.child({ context: { users } }).info('getAll users success');
+        res.status(200).send(users);
+      })
+      .catch((error) => {
+        logger.child({ context: { query: req.query } }).error(`getAll users fail: ${error?.message}`);
+        res.status(404).send({ message: error?.message });
+      });
   })
   .post(validateSchema(validator.add), (req, res) => {
     service

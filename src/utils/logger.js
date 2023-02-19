@@ -31,16 +31,10 @@ const colors = {
 addColors(colors);
 
 // Chose the aspect of your log customizing the log format
-const format = _format.combine(
-  _format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
-  _format.colorize({ all: true }),
-  _format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
-);
+const format = _format.combine(_format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }), _format.json());
 
 // Define which transports the logger must use to print out messages
 const transports = [
-  // Console to print the messages
-  new _transports.Console(),
   // error.log file to print all the error level messages
   new _transports.File({
     filename: 'logs/error.log',
@@ -48,6 +42,13 @@ const transports = [
   }),
   // all.log file to print all the error message
   new _transports.File({ filename: 'logs/all.log' }),
+  // Console to print the messages
+  new _transports.Console({
+    format: _format.combine(
+      _format.colorize({ all: true }),
+      _format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
+    ),
+  }),
 ];
 
 // Create the logger instance
