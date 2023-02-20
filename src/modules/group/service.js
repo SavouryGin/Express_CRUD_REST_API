@@ -1,27 +1,16 @@
 import crypto from 'crypto';
 
 export default class GroupsService {
-  constructor({ groupModel, userModel, userGroupModel, sequelize }) {
+  constructor({ groupModel, userGroupModel, sequelize }) {
     this.groupModel = groupModel;
-    this.userModel = userModel;
     this.userGroupModel = userGroupModel;
     this.sequelize = sequelize;
-    this.includeOptions = [
-      {
-        model: userModel,
-        as: 'users',
-        required: false,
-        attributes: ['id', 'login'],
-        through: { attributes: [] },
-      },
-    ];
   }
 
   async getAll() {
     try {
       return await this.groupModel.findAll({
         attributes: ['id', 'name', 'permissions'],
-        include: this.includeOptions,
       });
     } catch (error) {
       throw new Error(error?.message || 'getAll() error');

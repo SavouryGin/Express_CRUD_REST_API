@@ -13,12 +13,9 @@ router
   .get((req, res) => {
     service
       .getAll(req.query)
-      .then((users) => {
-        logger.child({ context: { users } }).info('getAll users success');
-        res.status(200).send(users);
-      })
+      .then((users) => res.status(200).send(users))
       .catch((error) => {
-        logger.child({ context: { query: req.query } }).error(`getAll users fail: ${error?.message}`);
+        logger.error(`Method 'getAll' failed: ${error?.message}`);
         res.status(404).send({ message: error?.message });
       });
   })
@@ -26,7 +23,10 @@ router
     service
       .add(req.body)
       .then((userId) => res.status(200).send({ message: `User ${userId} has been added successfully.` }))
-      .catch((error) => res.status(404).send({ message: error?.message }));
+      .catch((error) => {
+        logger.error(`Method 'add' failed: ${error?.message}`);
+        res.status(404).send({ message: error?.message });
+      });
   });
 
 router
@@ -36,14 +36,20 @@ router
     service
       .getById(id)
       .then((user) => res.status(200).send(user))
-      .catch((error) => res.status(404).send({ message: error?.message }));
+      .catch((error) => {
+        logger.child({ context: { params: req.params } }).error(`Method 'getById' failed: ${error?.message}`);
+        res.status(404).send({ message: error?.message });
+      });
   })
   .delete((req, res) => {
     const { id } = req.params;
     service
       .deleteById(id)
       .then((userId) => res.status(200).send({ message: `User ${userId} has been deleted successfully.` }))
-      .catch((error) => res.status(500).send({ message: error?.message }));
+      .catch((error) => {
+        logger.child({ context: { params: req.params } }).error(`Method 'deleteById' failed: ${error?.message}`);
+        res.status(500).send({ message: error?.message });
+      });
   })
   .patch(validateSchema(validator.update), (req, res) => {
     const { id } = req.params;
@@ -51,7 +57,10 @@ router
     service
       .updateById({ userId: id, data })
       .then((userId) => res.status(200).send({ message: `User ${userId} has been updated successfully.` }))
-      .catch((error) => res.status(500).send({ message: error?.message }));
+      .catch((error) => {
+        logger.child({ context: { params: req.params, body: req.body } }).error(`Method 'updateById' failed: ${error?.message}`);
+        res.status(500).send({ message: error?.message });
+      });
   });
 
 export default router;
