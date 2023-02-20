@@ -2,9 +2,10 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
 export default class UsersService {
-  constructor({ userModel, groupModel, operators }) {
+  constructor({ userModel, groupModel, operators, sequelize }) {
     this.userModel = userModel;
     this.groupModel = groupModel;
+    this.sequelize = sequelize;
     this.Op = operators;
     this.includeOptions = [
       {
@@ -40,11 +41,14 @@ export default class UsersService {
   }
 
   async add(data) {
+    const transaction = await this.sequelize.transaction();
     try {
       const preparedData = await this.prepareData(data);
       const newUser = await this.userModel.create(preparedData);
+      await transaction.commit();
       return newUser.dataValues.id;
     } catch (error) {
+      await transaction.rollback();
       throw new Error(error?.message || 'add() error');
     }
   }
@@ -67,25 +71,35 @@ export default class UsersService {
   }
 
   async deleteById(userId) {
+    const transaction = await this.sequelize.transaction();
     try {
       const result = await this.userModel.update({ isDeleted: true }, { where: { id: userId } });
       if (!result[0]) {
+        await transaction.rollback();
         throw new Error(`User ${userId} does not exist in the database`);
       }
+
+      await transaction.commit();
       return userId;
     } catch (error) {
+      await transaction.rollback();
       throw new Error(error?.message || 'deleteById() error');
     }
   }
 
   async updateById({ userId, data }) {
+    const transaction = await this.sequelize.transaction();
     try {
       const result = await this.userModel.update(data, { where: { id: userId } });
       if (!result[0]) {
+        await transaction.rollback();
         throw new Error(`User ${userId} does not exist in the database`);
       }
+
+      await transaction.commit();
       return userId;
     } catch (error) {
+      await transaction.rollback();
       throw new Error(error?.message || 'updateById() error');
     }
   }
