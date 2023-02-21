@@ -56,9 +56,6 @@ export default class GroupsService {
         throw new Error(`Group ${groupId} does not exist in the database`);
       }
 
-      // Delete all related records from the userGroupModel
-      await this.userGroupModel.destroy({ where: { groupId } }, { transaction });
-
       await transaction.commit();
       return groupId;
     } catch (error) {
