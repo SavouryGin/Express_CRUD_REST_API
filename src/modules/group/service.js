@@ -21,9 +21,8 @@ export default class GroupsService {
     const transaction = await this.sequelize.transaction();
     try {
       const newId = crypto.randomUUID();
-      const newGroup = await this.groupModel.create({ ...data, id: newId }, { transaction });
+      await this.groupModel.create({ ...data, id: newId }, { transaction });
       await transaction.commit();
-      return newGroup.dataValues.id;
     } catch (error) {
       await transaction.rollback();
       throw new Error(error?.message || 'add() error');
@@ -57,7 +56,6 @@ export default class GroupsService {
       }
 
       await transaction.commit();
-      return groupId;
     } catch (error) {
       await transaction.rollback();
       throw new Error(error?.message || 'deleteById() error');
@@ -74,7 +72,6 @@ export default class GroupsService {
       }
 
       await transaction.commit();
-      return groupId;
     } catch (error) {
       await transaction.rollback();
       throw new Error(error?.message || 'updateById() error');
@@ -89,7 +86,6 @@ export default class GroupsService {
       }
 
       await transaction.commit();
-      return groupId;
     } catch (error) {
       await transaction.rollback();
       throw new Error(error?.message || 'addUsersToGroup() error');

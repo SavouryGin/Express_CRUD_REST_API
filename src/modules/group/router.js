@@ -15,16 +15,16 @@ router
       .getAll()
       .then((groups) => res.status(200).send(groups))
       .catch((error) => {
-        logger.error(`Method 'getAll' failed: ${error?.message}`);
+        logger.error(`getAll failed: ${error?.message}`);
         res.status(404).send({ message: error?.message });
       });
   })
   .post(validateSchema(validator.add), (req, res) => {
     service
       .add(req.body)
-      .then((groupId) => res.status(200).send({ message: `Group ${groupId} has been added successfully.` }))
+      .then(() => res.status(201))
       .catch((error) => {
-        logger.error(`Method 'add' failed: ${error?.message}`);
+        logger.error(`add failed: ${error?.message}`);
         res.status(404).send({ message: error?.message });
       });
   });
@@ -37,7 +37,7 @@ router
       .getById(id)
       .then((group) => res.status(200).send(group))
       .catch((error) => {
-        logger.child({ context: { params: req.params } }).error(`Method 'getById' failed: ${error?.message}`);
+        logger.child({ context: { params: req.params } }).error(`getById failed: ${error?.message}`);
         res.status(404).send({ message: error?.message });
       });
   })
@@ -45,9 +45,9 @@ router
     const { id } = req.params;
     service
       .deleteById(id)
-      .then((groupId) => res.status(200).send({ message: `Group ${groupId} has been deleted successfully.` }))
+      .then(() => res.status(204))
       .catch((error) => {
-        logger.child({ context: { params: req.params } }).error(`Method 'deleteById' failed: ${error?.message}`);
+        logger.child({ context: { params: req.params } }).error(`deleteById failed: ${error?.message}`);
         res.status(500).send({ message: error?.message });
       });
   })
@@ -56,9 +56,9 @@ router
     const data = { name: req.body?.name, permissions: req.body?.permissions };
     service
       .updateById({ groupId: id, data })
-      .then((groupId) => res.status(200).send({ message: `Group ${groupId} has been updated successfully.` }))
+      .then(() => res.status(204))
       .catch((error) => {
-        logger.error(`Method 'updateById' failed: ${error?.message}`);
+        logger.error(`updateById failed: ${error?.message}`);
         res.status(500).send({ message: error?.message });
       });
   })
@@ -66,9 +66,9 @@ router
     const { id } = req.params;
     service
       .addUsersToGroup({ groupId: id, userIds: req.body.userIds })
-      .then((groupId) => res.status(200).send({ message: `Users have been added to group ${groupId} successfully.` }))
+      .then(() => res.status(204))
       .catch((error) => {
-        logger.child({ context: { params: req.params, body: req.body } }).error(`Method 'addUsersToGroup' failed: ${error?.message}`);
+        logger.child({ context: { params: req.params, body: req.body } }).error(`addUsersToGroup failed: ${error?.message}`);
         res.status(500).send({ message: error?.message });
       });
   });
