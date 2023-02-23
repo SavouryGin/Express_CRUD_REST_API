@@ -22,6 +22,14 @@ db.sequelize
   .then(() => logger.info('The database has been synced.'))
   .catch((error) => logger.error(`Failed to sync the database: ${error.message}`));
 
-app.listen(config.port, () => {
+const server = app.listen(config.port, () => {
   logger.info(`Server is running on http://localhost:${config.port}`);
+});
+
+process.on('uncaughtException', (error, source) => {
+  logger.info('An uncaught error has occurred. The server will be stopped.');
+  logger.child({ context: { error, source } }).error(error?.message);
+  server.close(() => {
+    logger.info('Server has been stopped.');
+  });
 });
