@@ -22,7 +22,7 @@ router
   .post(validateSchema(validator.add), (req, res) => {
     service
       .add(req.body)
-      .then(() => res.status(201))
+      .then(() => res.sendStatus(201))
       .catch((error) => {
         logger.error(`add failed: ${error?.message}`);
         res.status(404).send({ message: error?.message });
@@ -45,7 +45,7 @@ router
     const { id } = req.params;
     service
       .deleteById(id)
-      .then(() => res.status(204))
+      .then(() => res.sendStatus(204))
       .catch((error) => {
         logger.child({ context: { params: req.params } }).error(`deleteById failed: ${error?.message}`);
         res.status(500).send({ message: error?.message });
@@ -56,7 +56,7 @@ router
     const data = { name: req.body?.name, permissions: req.body?.permissions };
     service
       .updateById({ groupId: id, data })
-      .then(() => res.status(204))
+      .then(() => res.sendStatus(204))
       .catch((error) => {
         logger.error(`updateById failed: ${error?.message}`);
         res.status(500).send({ message: error?.message });
@@ -66,7 +66,7 @@ router
     const { id } = req.params;
     service
       .addUsersToGroup({ groupId: id, userIds: req.body.userIds })
-      .then(() => res.status(204))
+      .then(() => res.sendStatus(204))
       .catch((error) => {
         logger.child({ context: { params: req.params, body: req.body } }).error(`addUsersToGroup failed: ${error?.message}`);
         res.status(500).send({ message: error?.message });

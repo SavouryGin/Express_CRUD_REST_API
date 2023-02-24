@@ -33,7 +33,6 @@ export default class UsersService {
         limit: isAutoSuggest ? limit : undefined,
         attributes: ['id', 'login', 'age'],
         where: condition,
-        include: this.includeOptions,
       });
     } catch (error) {
       throw new Error(error?.message || 'getAll() error');
