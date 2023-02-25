@@ -72,8 +72,7 @@ export default class UsersService {
     const transaction = await this.sequelize.transaction();
     try {
       const result = await this.userModel.update({ isDeleted: true }, { where: { id: userId } }, { transaction });
-      if (!result[0]) {
-        await transaction.rollback();
+      if (result[0] === 0) {
         throw new Error(`User ${userId} does not exist in the database`);
       }
 

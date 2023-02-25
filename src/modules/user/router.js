@@ -48,7 +48,7 @@ router
       .then(() => res.sendStatus(204))
       .catch((error) => {
         logger.child({ context: { params: req.params } }).error(`Method 'deleteById' failed: ${error?.message}`);
-        res.status(500).send({ message: error?.message });
+        res.status(404).send({ message: error?.message });
       });
   })
   .patch(validateSchema(validator.update), (req, res) => {

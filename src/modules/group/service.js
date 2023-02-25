@@ -50,8 +50,7 @@ export default class GroupsService {
     const transaction = await this.sequelize.transaction();
     try {
       const result = await this.groupModel.destroy({ where: { id: groupId } }, { transaction });
-      if (result !== 1) {
-        await transaction.rollback();
+      if (result === 0) {
         throw new Error(`Group ${groupId} does not exist in the database`);
       }
 
