@@ -1,12 +1,14 @@
 import express from 'express';
 import UsersService from './service.js';
+import UserRepository from '../../data-access/user-repository.js';
 import validateSchema from '../../utils/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 import logger from '../../utils/logger.js';
 
 const router = express.Router();
-const service = new UsersService({ userModel: db.User, groupModel: db.Group, operators: db.Sequelize.Op, sequelize: db.sequelize });
+const repo = new UserRepository(db);
+const service = new UsersService(repo);
 
 router
   .route('/')

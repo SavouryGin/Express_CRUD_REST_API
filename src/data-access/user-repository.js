@@ -4,14 +4,13 @@ export default class UserRepository extends AbstractRepository {
   constructor(db) {
     super();
     this.userModel = db.User;
-    this.groupModel = db.Group;
     this.Op = db.Sequelize.Op;
     this.sequelize = db.sequelize;
   }
 
-  async exists(user) {
+  async exists(userId) {
     const result = await this.userModel.findOne({
-      where: { id: user.id.toString() },
+      where: { id: userId },
     });
     return !!result === true;
   }
