@@ -1,12 +1,14 @@
 import express from 'express';
 import GroupsService from './service.js';
+import GroupRepository from './repository.js';
 import validateSchema from '../../utils/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 import logger from '../../utils/logger.js';
 
 const router = express.Router();
-const service = new GroupsService({ groupModel: db.Group, userGroupModel: db.UserGroup, sequelize: db.sequelize });
+const repo = new GroupRepository(db);
+const service = new GroupsService(repo);
 
 router
   .route('/')

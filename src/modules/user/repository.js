@@ -1,4 +1,4 @@
-import AbstractRepository from './abstract-repository.js';
+import AbstractRepository from '../../data-access/abstract-repository.js';
 
 export default class UserRepository extends AbstractRepository {
   constructor(db) {
@@ -54,12 +54,6 @@ export default class UserRepository extends AbstractRepository {
     let t;
     try {
       t = await this.sequelize.transaction();
-      const exists = await this.exists(user.id);
-
-      if (exists) {
-        throw new Error(`User ${user.id} already exists`);
-      }
-
       await this.userModel.create(user, { transaction: t });
       await t.commit();
     } catch (error) {
