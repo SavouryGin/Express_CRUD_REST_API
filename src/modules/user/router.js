@@ -6,6 +6,8 @@ import validateSchema from '../../utils/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 import logger from '../../utils/logger.js';
+import config from '../../config/index.js';
+import auth from '../../middlewares/auth.js';
 
 const router = express.Router();
 const repo = new UserRepository(db);
@@ -13,7 +15,7 @@ const service = new UsersService(repo);
 
 router
   .route('/')
-  .get((req, res) => {
+  .get(auth, (req, res) => {
     service
       .getAll(req.query)
       .then((users) => res.status(200).send(users))
@@ -22,7 +24,7 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .post(validateSchema(validator.add), (req, res) => {
+  .post(auth, validateSchema(validator.add), (req, res) => {
     service
       .add(req.body)
       .then(() => res.sendStatus(201))
@@ -34,7 +36,7 @@ router
 
 router
   .route('/:id')
-  .get((req, res) => {
+  .get(auth, (req, res) => {
     const { id } = req.params;
     service
       .getById(id)
@@ -44,7 +46,7 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .delete((req, res) => {
+  .delete(auth, (req, res) => {
     const { id } = req.params;
     service
       .deleteById(id)
@@ -54,7 +56,7 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .patch(validateSchema(validator.update), (req, res) => {
+  .patch(auth, validateSchema(validator.update), (req, res) => {
     const { id } = req.params;
     const data = { login: req.body?.login, password: req.body?.password, age: req.body?.age };
     service
@@ -68,12 +70,11 @@ router
 
 router.post('/login', validateSchema(validator.login), (req, res) => {
   const { login, password } = req.body;
-  console.log('Req', login, password);
   service
     .loginUser(login, password)
     .then(({ id, login }) => {
       logger.info(`Successful login for user "${login}" with id "${id}"`);
-      const token = jwt.sign({ id, login }, process.env.TOKEN_KEY, { expiresIn: '2h' });
+      const token = jwt.sign({ id, login }, config.tokenKey, { expiresIn: '2h' });
       res.status(201).send({ token });
     })
     .catch((error) => {

@@ -5,6 +5,7 @@ import validateSchema from '../../utils/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 import logger from '../../utils/logger.js';
+import auth from '../../middlewares/auth.js';
 
 const router = express.Router();
 const repo = new GroupRepository(db);
@@ -12,7 +13,7 @@ const service = new GroupsService(repo);
 
 router
   .route('/')
-  .get((_req, res) => {
+  .get(auth, (_req, res) => {
     service
       .getAll()
       .then((groups) => res.status(200).send(groups))
@@ -21,7 +22,7 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .post(validateSchema(validator.add), (req, res) => {
+  .post(auth, validateSchema(validator.add), (req, res) => {
     service
       .add(req.body)
       .then(() => res.sendStatus(201))
@@ -33,7 +34,7 @@ router
 
 router
   .route('/:id')
-  .get((req, res) => {
+  .get(auth, (req, res) => {
     const { id } = req.params;
     service
       .getById(id)
@@ -43,7 +44,7 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .delete((req, res) => {
+  .delete(auth, (req, res) => {
     const { id } = req.params;
     service
       .deleteById(id)
@@ -53,7 +54,7 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .patch(validateSchema(validator.update), (req, res) => {
+  .patch(auth, validateSchema(validator.update), (req, res) => {
     const { id } = req.params;
     const data = { name: req.body?.name, permissions: req.body?.permissions };
     service
@@ -64,7 +65,7 @@ router
         res.status(500).send({ message: error?.message });
       });
   })
-  .post(validateSchema(validator.addUsers), (req, res) => {
+  .post(auth, validateSchema(validator.addUsers), (req, res) => {
     const { id } = req.params;
     service
       .addUsersToGroup({ groupId: id, userIds: req.body.userIds })
