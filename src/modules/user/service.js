@@ -36,4 +36,14 @@ export default class UsersService {
 
     return { ...data, id: newId, isDeleted: false, password: hashedPwd };
   }
+
+  async loginUser(login, password) {
+    const user = await this.repo.getByLogin(login);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (isPasswordCorrect) {
+      return { id: user.id, login: user.login };
+    } else {
+      throw new Error(`Incorrect password entered for user ${login}`);
+    }
+  }
 }

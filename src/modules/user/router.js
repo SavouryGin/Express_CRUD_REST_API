@@ -1,4 +1,5 @@
 import express from 'express';
+import jwt from 'jsonwebtoken';
 import UsersService from './service.js';
 import UserRepository from './repository.js';
 import validateSchema from '../../utils/validate-schema.js';
@@ -68,7 +69,17 @@ router
 router.post('/login', validateSchema(validator.login), (req, res) => {
   const { login, password } = req.body;
   console.log('Req', login, password);
-  res.sendStatus(200);
+  service
+    .loginUser(login, password)
+    .then(({ id, login }) => {
+      logger.info(`Successful login for user "${login}" with id "${id}"`);
+      const token = jwt.sign({ id, login }, process.env.TOKEN_KEY, { expiresIn: '2h' });
+      res.status(201).send({ token });
+    })
+    .catch((error) => {
+      logger.error(`Failed login attempt for user "${login}"`);
+      res.status(400).send({ message: error?.message });
+    });
 });
 
 export default router;

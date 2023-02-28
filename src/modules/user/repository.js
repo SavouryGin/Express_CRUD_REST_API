@@ -50,6 +50,27 @@ export default class UserRepository extends AbstractRepository {
     }
   }
 
+  async getByLogin(login) {
+    try {
+      const user = await this.userModel.findOne({
+        where: { login, isDeleted: false },
+        attributes: ['id', 'login', 'password', 'isDeleted'],
+      });
+
+      if (!user) {
+        throw new Error(`User ${login} does not exist in the database`);
+      }
+
+      if (user.isDeleted) {
+        throw new Error(`User ${login} has been deleted`);
+      }
+
+      return user;
+    } catch (error) {
+      throw new Error(error?.message || 'getByLogin() error');
+    }
+  }
+
   async add(user) {
     let t;
     try {
