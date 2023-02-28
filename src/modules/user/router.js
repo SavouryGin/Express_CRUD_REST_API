@@ -65,4 +65,10 @@ router
       });
   });
 
+router.post('/login', validateSchema(validator.login), (req, res) => {
+  const { login, password } = req.body;
+  console.log('Req', login, password);
+  res.sendStatus(200);
+});
+
 export default router;
