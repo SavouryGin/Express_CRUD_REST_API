@@ -72,9 +72,9 @@ router.post('/login', validateSchema(validator.login), (req, res) => {
   const { login, password } = req.body;
   service
     .loginUser(login, password)
-    .then(({ id, login }) => {
-      logger.info(`Successful login for user "${login}" with id "${id}"`);
-      const token = jwt.sign({ id, login }, config.tokenKey, { expiresIn: '2h' });
+    .then((payload) => {
+      logger.info(`Successful login for user "${login}"`);
+      const token = jwt.sign(payload, config.tokenKey, { expiresIn: config.jwtExpiresIn });
       res.status(201).send({ token });
     })
     .catch((error) => {

@@ -41,7 +41,7 @@ export default class UsersService {
     const user = await this.repo.getByLogin(login);
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (isPasswordCorrect) {
-      return { id: user.id, login: user.login };
+      return { sub: user.id, name: user.login, isActive: !user.isDeleted };
     } else {
       throw new Error(`Incorrect password entered for user ${login}`);
     }

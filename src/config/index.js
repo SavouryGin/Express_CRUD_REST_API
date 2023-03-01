@@ -18,4 +18,5 @@ export default {
       idle: 10000,
     },
   },
+  jwtExpiresIn: '2h',
 };
