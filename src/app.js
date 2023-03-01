@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import usersRouter from './modules/user/router.js';
 import groupsRouter from './modules/group/router.js';
 import config from './config/index.js';
@@ -8,6 +9,8 @@ import logger from './utils/logger.js';
 const app = express();
 
 app.use(express.json());
+
+app.use(cors(config.corsOptions));
 
 app.use(morganMiddleware);
 

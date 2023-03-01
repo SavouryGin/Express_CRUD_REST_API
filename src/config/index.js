@@ -19,4 +19,7 @@ export default {
     },
   },
   jwtExpiresIn: '2h',
+  corsOptions: {
+    origin: ['http://localhost:3000'],
+  },
 };
