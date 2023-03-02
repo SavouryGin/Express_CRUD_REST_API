@@ -4,6 +4,7 @@ dotenv.config();
 
 export default {
   port: process.env.PORT,
+  tokenKey: process.env.TOKEN_KEY,
   db: {
     HOST: process.env.DB_HOST,
     USER: process.env.DB_USER,
@@ -16,5 +17,9 @@ export default {
       acquire: 30000,
       idle: 10000,
     },
+  },
+  jwtExpiresIn: '2h',
+  corsOptions: {
+    origin: ['http://localhost:3000'],
   },
 };

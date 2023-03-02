@@ -32,12 +32,14 @@ db.User.belongsToMany(db.Group, {
   through: 'UserGroup',
   as: 'groups',
   foreignKey: 'userId',
+  onDelete: 'CASCADE',
 });
 
 db.Group.belongsToMany(db.User, {
   through: 'UserGroup',
   as: 'users',
   foreignKey: 'groupId',
+  onDelete: 'CASCADE',
 });
 
 export default db;

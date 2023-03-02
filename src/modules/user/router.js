@@ -1,16 +1,21 @@
 import express from 'express';
+import jwt from 'jsonwebtoken';
 import UsersService from './service.js';
+import UserRepository from './repository.js';
 import validateSchema from '../../utils/validate-schema.js';
 import validator from './validator.js';
 import db from '../../data-access/index.js';
 import logger from '../../utils/logger.js';
+import config from '../../config/index.js';
+import auth from '../../middlewares/auth.js';
 
 const router = express.Router();
-const service = new UsersService({ userModel: db.User, groupModel: db.Group, operators: db.Sequelize.Op, sequelize: db.sequelize });
+const repo = new UserRepository(db);
+const service = new UsersService(repo);
 
 router
   .route('/')
-  .get((req, res) => {
+  .get(auth, (req, res) => {
     service
       .getAll(req.query)
       .then((users) => res.status(200).send(users))
@@ -19,10 +24,10 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .post(validateSchema(validator.add), (req, res) => {
+  .post(auth, validateSchema(validator.add), (req, res) => {
     service
       .add(req.body)
-      .then((userId) => res.status(200).send({ message: `User ${userId} has been added successfully.` }))
+      .then(() => res.sendStatus(201))
       .catch((error) => {
         logger.error(`Method 'add' failed: ${error?.message}`);
         res.status(404).send({ message: error?.message });
@@ -31,7 +36,7 @@ router
 
 router
   .route('/:id')
-  .get((req, res) => {
+  .get(auth, (req, res) => {
     const { id } = req.params;
     service
       .getById(id)
@@ -41,26 +46,41 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .delete((req, res) => {
+  .delete(auth, (req, res) => {
     const { id } = req.params;
     service
       .deleteById(id)
-      .then((userId) => res.status(200).send({ message: `User ${userId} has been deleted successfully.` }))
+      .then(() => res.sendStatus(204))
       .catch((error) => {
         logger.child({ context: { params: req.params } }).error(`Method 'deleteById' failed: ${error?.message}`);
-        res.status(500).send({ message: error?.message });
+        res.status(404).send({ message: error?.message });
       });
   })
-  .patch(validateSchema(validator.update), (req, res) => {
+  .patch(auth, validateSchema(validator.update), (req, res) => {
     const { id } = req.params;
     const data = { login: req.body?.login, password: req.body?.password, age: req.body?.age };
     service
       .updateById({ userId: id, data })
-      .then((userId) => res.status(200).send({ message: `User ${userId} has been updated successfully.` }))
+      .then(() => res.sendStatus(204))
       .catch((error) => {
         logger.child({ context: { params: req.params, body: req.body } }).error(`Method 'updateById' failed: ${error?.message}`);
         res.status(500).send({ message: error?.message });
       });
   });
+
+router.post('/login', validateSchema(validator.login), (req, res) => {
+  const { login, password } = req.body;
+  service
+    .loginUser(login, password)
+    .then((payload) => {
+      logger.info(`Successful login for user "${login}"`);
+      const token = jwt.sign(payload, config.tokenKey, { expiresIn: config.jwtExpiresIn });
+      res.status(201).send({ token });
+    })
+    .catch((error) => {
+      logger.error(`Failed login attempt for user "${login}"`);
+      res.status(400).send({ message: error?.message });
+    });
+});
 
 export default router;
