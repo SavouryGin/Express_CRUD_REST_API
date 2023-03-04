@@ -11,7 +11,7 @@ const verifyToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, config.tokenKey);
+    const decoded = jwt.verify(token, config[process.env.NODE_ENV].tokenKey);
     req.user = decoded;
   } catch (error) {
     logger.child({ context: { error } }).error('Invalid Token');
