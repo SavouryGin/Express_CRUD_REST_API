@@ -4,26 +4,22 @@ import db from '../../../data-access/index.js';
 
 describe('GET /api/products', () => {
   /* Connecting to the database before each test. */
-  beforeEach(async () => {
-    db.sequelize
-      .sync({ force: true })
-      .then(() => {
-        console.log('Synced db.');
-      })
-      .catch((err) => {
-        console.log('Failed to sync db: ' + err.message);
-      });
+  beforeAll(async () => {
+    await db.sequelize.sync({ force: true });
   });
 
-  //   /* Closing database connection after each test. */
-  //   afterEach(async () => {
-  //     await mongoose.connection.close();
-  //   });
+  /* Closing database connection after each test. */
+  afterAll(async () => {
+    await db.sequelize.close();
+  });
 
-  it('should return all users', async () => {
-    const res = await request(app).get('http://localhost:9000/users');
-    console.log(res);
-    expect(res.statusCode).toBe(200);
-    // expect(res.body.length).toBeGreaterThan(0);
+  it('GET /users should return a 401 error if the call is not authorized', async () => {
+    const res = await request(app).get('/users');
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('GET /users should return a 403 error if access token is invalid', async () => {
+    const res = await request(app).get('/users').set('x-access-token', 'abc123');
+    expect(res.statusCode).toBe(403);
   });
 });
