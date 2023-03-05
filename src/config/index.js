@@ -4,7 +4,7 @@ dotenv.config();
 
 export default {
   development: {
-    port: process.env.PORT,
+    port: process.env.DEV_PORT,
     tokenKey: process.env.TOKEN_KEY,
     jwtExpiresIn: '2h',
     corsOptions: {
@@ -25,7 +25,7 @@ export default {
     },
   },
   testing: {
-    port: process.env.PORT,
+    port: process.env.TEST_PORT,
     tokenKey: process.env.TOKEN_KEY,
     jwtExpiresIn: '2h',
     corsOptions: {
