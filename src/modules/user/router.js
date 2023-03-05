@@ -24,7 +24,7 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .post(auth, validateSchema(validator.add), (req, res) => {
+  .post(validateSchema(validator.add), (req, res) => {
     service
       .add(req.body)
       .then(() => res.sendStatus(201))
