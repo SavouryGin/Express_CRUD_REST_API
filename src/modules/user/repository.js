@@ -75,8 +75,9 @@ export default class UserRepository extends AbstractRepository {
     let t;
     try {
       t = await this.sequelize.transaction();
-      await this.userModel.create(user, { transaction: t });
+      const newUser = await this.userModel.create(user, { transaction: t });
       await t.commit();
+      return newUser.id;
     } catch (error) {
       if (t) await t.rollback();
       throw new Error(error?.message || 'add() method error');

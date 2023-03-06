@@ -15,7 +15,8 @@ export default class UsersService {
 
   async add(data) {
     const user = await this.prepareData(data);
-    await this.repo.add(user);
+    const id = await this.repo.add(user);
+    return id;
   }
 
   async getById(userId) {

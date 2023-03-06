@@ -27,7 +27,7 @@ router
   .post(validateSchema(validator.add), (req, res) => {
     service
       .add(req.body)
-      .then(() => res.sendStatus(201))
+      .then((id) => res.status(201).send({ id }))
       .catch((error) => {
         logger.error(`Method 'add' failed: ${error?.message}`);
         res.status(404).send({ message: error?.message });
