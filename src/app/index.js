@@ -8,12 +8,13 @@ import morganMiddleware from '../middlewares/morgan.js';
 const app = express();
 
 const ENV = process.env.NODE_ENV;
+const isDev = ENV === 'development';
+
+isDev && app.use(morganMiddleware);
 
 app.use(express.json());
 
 app.use(cors(config[ENV].corsOptions));
-
-app.use(morganMiddleware);
 
 app.use('/users', usersRouter);
 
