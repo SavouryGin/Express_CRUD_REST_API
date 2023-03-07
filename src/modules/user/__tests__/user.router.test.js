@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../../../app/index.js';
 import db from '../../../data-access/index.js';
 
-describe('Users router tests:', () => {
+describe('User router tests:', () => {
   const userPayload = { login: 'test@gmail.com', password: '123TestPwd', age: 20 };
   let token;
   // Connecting to the database before running tests
