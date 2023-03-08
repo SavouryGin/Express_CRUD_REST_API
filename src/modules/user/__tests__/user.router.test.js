@@ -13,11 +13,6 @@ describe('User router tests:', () => {
     token = res.body.token;
   });
 
-  // Closing database connection after all tests
-  afterAll(async () => {
-    await db.sequelize.close();
-  });
-
   it('GET /users should return 401 error if the call is not authorized', async () => {
     const res = await request(app).get('/users');
     expect(res.statusCode).toBe(401);
@@ -64,5 +59,10 @@ describe('User router tests:', () => {
     expect(userId).toBeDefined();
     const updateRes = await request(app).patch(`/users/${userId}`).set('x-access-token', token).send({ age: 30 });
     expect(updateRes.statusCode).toBe(204);
+  });
+
+  // Closing database connection after all tests
+  afterAll(async () => {
+    await db.sequelize.close();
   });
 });

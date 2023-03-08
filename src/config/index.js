@@ -22,6 +22,7 @@ export default {
         acquire: 30000,
         idle: 10000,
       },
+      logging: true,
     },
   },
   testing: {
@@ -43,6 +44,7 @@ export default {
         acquire: 30000,
         idle: 10000,
       },
+      logging: false,
     },
   },
 };

@@ -15,11 +15,6 @@ describe('Group router tests:', () => {
     token = res.body.token;
   });
 
-  // Closing database connection after all tests
-  afterAll(async () => {
-    await db.sequelize.close();
-  });
-
   it('GET /groups should return 401 error if the call is not authorized', async () => {
     const res = await request(app).get('/groups');
     expect(res.statusCode).toBe(401);
@@ -57,5 +52,10 @@ describe('Group router tests:', () => {
     expect(groupId).toBeDefined();
     const updateRes = await request(app).patch(`/groups/${groupId}`).set('x-access-token', token).send({ name: 'newName' });
     expect(updateRes.statusCode).toBe(204);
+  });
+
+  // Closing database connection after all tests
+  afterAll(async () => {
+    await db.sequelize.close();
   });
 });

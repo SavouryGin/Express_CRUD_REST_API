@@ -10,7 +10,7 @@
     "1.3.1": "nodemon --exec babel-node ./archive/task_1.3/1.1_redone.js",
     "1.3.2": "nodemon --exec babel-node ./archive/task_1.3/1.2_redone.js",
     "start": "cross-env NODE_ENV=development nodemon ./src/index.js",
-    "test": "cross-env NODE_ENV=testing jest",
+    "test": "cross-env NODE_ENV=testing jest --runInBand",
     "coverage": "cross-env NODE_ENV=testing jest --coverage --collectCoverageFrom='src/**/*.{js}'"
   },
   "repository": {
