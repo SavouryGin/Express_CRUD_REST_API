@@ -29,8 +29,9 @@ export default class GroupRepository extends AbstractRepository {
     let t;
     try {
       t = await this.sequelize.transaction();
-      await this.groupModel.create(group, { transaction: t });
+      const newGroup = await this.groupModel.create(group, { transaction: t });
       await t.commit();
+      return newGroup.id;
     } catch (error) {
       if (t) await t.rollback();
       throw new Error(error?.message || 'add() error');

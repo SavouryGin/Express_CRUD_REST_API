@@ -12,7 +12,8 @@ export default class GroupsService {
   async add(data) {
     const newId = crypto.randomUUID();
     const group = { ...data, id: newId };
-    await this.repo.add(group);
+    const id = await this.repo.add(group);
+    return id;
   }
 
   async getById(groupId) {

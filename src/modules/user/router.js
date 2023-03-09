@@ -24,10 +24,10 @@ router
         res.status(404).send({ message: error?.message });
       });
   })
-  .post(auth, validateSchema(validator.add), (req, res) => {
+  .post(validateSchema(validator.add), (req, res) => {
     service
       .add(req.body)
-      .then(() => res.sendStatus(201))
+      .then((id) => res.status(201).send({ id }))
       .catch((error) => {
         logger.error(`Method 'add' failed: ${error?.message}`);
         res.status(404).send({ message: error?.message });
@@ -74,7 +74,7 @@ router.post('/login', validateSchema(validator.login), (req, res) => {
     .loginUser(login, password)
     .then((payload) => {
       logger.info(`Successful login for user "${login}"`);
-      const token = jwt.sign(payload, config.tokenKey, { expiresIn: config.jwtExpiresIn });
+      const token = jwt.sign(payload, config[process.env.NODE_ENV].tokenKey, { expiresIn: config[process.env.NODE_ENV].jwtExpiresIn });
       res.status(201).send({ token });
     })
     .catch((error) => {

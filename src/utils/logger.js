@@ -1,5 +1,8 @@
 import { addColors, format as _format, transports as _transports, createLogger } from 'winston';
 
+const ENV = process.env.NODE_ENV;
+const isDev = ENV === 'development';
+
 // Severity levels
 const levels = {
   error: 0,
@@ -56,7 +59,7 @@ const logger = createLogger({
   level: level(),
   levels,
   format,
-  transports,
+  transports: isDev ? transports : transports[2],
 });
 
 export default logger;

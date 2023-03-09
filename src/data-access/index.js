@@ -4,16 +4,20 @@ import UserModel from '../modules/user/model.js';
 import GroupModel from '../modules/group/model.js';
 import UserGroup from '../modules/user-group/model.js';
 
-const sequelize = new Sequelize(config.db.DB, config.db.USER, config.db.PASSWORD, {
-  host: config.db.HOST,
-  dialect: config.db.dialect,
+const ENV = process.env.NODE_ENV;
+const dbConfig = config[ENV].db;
+
+const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+  host: dbConfig.HOST,
+  dialect: dbConfig.dialect,
   operatorsAliases: false,
+  logging: dbConfig.logging,
 
   pool: {
-    max: config.db.pool.max,
-    min: config.db.pool.min,
-    acquire: config.db.pool.acquire,
-    idle: config.db.pool.idle,
+    max: dbConfig.pool.max,
+    min: dbConfig.pool.min,
+    acquire: dbConfig.acquire,
+    idle: dbConfig.pool.idle,
   },
 });
 
