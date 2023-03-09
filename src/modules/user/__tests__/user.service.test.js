@@ -1,7 +1,5 @@
 import UsersService from '../service.js';
-// import UserRepository from '../repository.js';
 import MockUserRepository from '../../../__mocks__/user-repo.js';
-import testUser from '../../../__mocks__/test-user.js';
 jest.mock('../../../__mocks__/user-repo.js');
 
 describe('UsersService tests', () => {
@@ -10,6 +8,12 @@ describe('UsersService tests', () => {
     MockUserRepository.mockClear();
   });
 
+  const testUser = {
+    login: 'test@gmail.com',
+    age: 27,
+    password: 'testPwd123',
+  };
+
   it('should call the constructor of UserRepository', async () => {
     const repo = new MockUserRepository();
     const service = new UsersService(repo);
@@ -17,26 +21,40 @@ describe('UsersService tests', () => {
     expect(MockUserRepository).toHaveBeenCalledTimes(1);
   });
 
-  it('should return the user by id', async () => {
+  it('should get the user by id', async () => {
     const repo = new MockUserRepository();
     const service = new UsersService(repo);
-    const user = await service.getById('test-id');
+    await service.getById(testUser.id);
     expect(repo.getById).toHaveBeenCalledTimes(1);
-    expect(user).toEqual(testUser);
   });
-  // context('associations', () => {
-  //   const Company = 'some dummy company'
 
-  //   before(() => {
-  //     User.associate({ Company })
-  //   })
+  it('should add the user', async () => {
+    const repo = new MockUserRepository();
+    const service = new UsersService(repo);
+    await service.add(testUser);
+    expect(repo.add).toHaveBeenCalledTimes(1);
+  });
 
-  //   it('defined a belongsTo association with Company', () => {
-  //     expect(User.belongsTo).to.have.been.calledWith(Company)
-  //   })
-  // })
+  it('should delete the user', async () => {
+    const repo = new MockUserRepository();
+    const service = new UsersService(repo);
+    await service.deleteById(testUser.id);
+    expect(repo.deleteById).toHaveBeenCalledTimes(1);
+  });
 
-  // context('indexes', () => {
-  //   ;['email', 'token'].forEach(checkUniqueIndex(user))
-  // })
+  it('should update the user', async () => {
+    const repo = new MockUserRepository();
+    const service = new UsersService(repo);
+    await service.updateById(testUser);
+    expect(repo.updateById).toHaveBeenCalledTimes(1);
+  });
+
+  it('should prepare the data for user', async () => {
+    const repo = new MockUserRepository();
+    const service = new UsersService(repo);
+    const newData = await service.prepareData(testUser);
+    expect(newData.id).toBeDefined();
+    expect(newData.password).not.toBe(testUser.password);
+    expect(newData.isDeleted).toBeFalsy();
+  });
 });

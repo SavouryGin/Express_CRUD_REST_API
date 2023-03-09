@@ -1,38 +1,41 @@
-import testUser from './test-user.js';
+import AbstractRepository from '../data-access/abstract-repository.js';
 
-export default class MockUserRepository {
+export default class MockUserRepository extends AbstractRepository {
   constructor() {
-    console.log('MockUserRepository: constructor was called ');
+    super();
+    console.log('MockUserRepository: constructor was called');
   }
 
-  async exists(userId) {
-    console.log('MockUserRepository: exists was called with');
+  async exists(_userId) {
+    console.log('MockUserRepository: exists was called');
   }
 
-  async getAll({ isAutoSuggest, loginSubstring, limit }) {
-    console.log('MockUserRepository: getAll was called with');
+  async getAll(_data) {
+    console.log('MockUserRepository: getAll was called');
   }
 
-  async getById(userId) {
-    console.log('MockUserRepository: getById was called with');
-    return testUser;
+  async getById(_userId) {
+    console.log('MockUserRepository: getById was called');
   }
 
-  async getByLogin(login) {
-    console.log('MockUserRepository: getByLogin was called with');
-    return testUser;
+  async getByLogin(_login) {
+    console.log('MockUserRepository: getByLogin was called');
+    return {
+      login: 'test@gmail.com',
+      age: 27,
+      password: 'testPwd123',
+    };
   }
 
-  async add(user) {
-    console.log('MockUserRepository: add was called with');
-    return testUser.id;
+  async add(_user) {
+    console.log('MockUserRepository: add was called');
   }
 
-  async deleteById(userId) {
-    console.log('deleteById: add was called with');
+  async deleteById(_userId) {
+    console.log('MockUserRepository: deleteById was called');
   }
 
-  async updateById({ userId, data }) {
-    console.log('updateById: add was called with');
+  async updateById(_data) {
+    console.log('MockUserRepository: updateById was called');
   }
 }

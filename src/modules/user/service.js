@@ -32,7 +32,7 @@ export default class UsersService {
   }
 
   async prepareData(data) {
-    const hashedPwd = await bcrypt.hash(data.password, 13);
+    const hashedPwd = await bcrypt.hash(data?.password || '', 13);
     const newId = crypto.randomUUID();
 
     return { ...data, id: newId, isDeleted: false, password: hashedPwd };
@@ -40,7 +40,7 @@ export default class UsersService {
 
   async loginUser(login, password) {
     const user = await this.repo.getByLogin(login);
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(password, user?.password || '');
     if (isPasswordCorrect) {
       return { sub: user.id, name: user.login, isActive: !user.isDeleted };
     } else {
