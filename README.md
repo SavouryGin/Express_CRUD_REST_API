@@ -1,23 +1,24 @@
-# NodeJS_GMP_2022Q4_EPAM
+# Express Crud Server
 
-Repository for home tasks completed in course NodeJS Global Mentoring Program [2022Q4 EU]
+A simple CRUD server created with NodeJS, Express, Sequelize ORM and PostgreSQL.
+
+- [x] Two sequelize models for users and user groups
+- [x] Layered architecture
+- [x] Validation middleware (Joi)
+- [x] Logging middleware (Morgan and Winston)
+- [x] Authentication middleware (JWT)
+- [x] Testing environment (Jest)
 
 ## Available Scripts
 
-In the project directory, you can run:
-
-### Task 1
-
-#### `npm run 1.1`
-
-#### `npm run 1.2`
-
-#### `npm run 1.3.1`
-
-#### `npm run 1.3.2`
-
-### Task 2
+Run the service:
 
 #### `npm run start`
 
-Run the CRUD service
+Run all the tests:
+
+#### `npm run test`
+
+Get the code coverage:
+
+#### `npm run coverage`
