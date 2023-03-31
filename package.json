@@ -1,5 +1,5 @@
 {
-  "name": "express_crud_server",
+  "name": "express_crud_rest_api",
   "version": "1.0.0",
   "description": "A simple CRUD server created with NodeJS, Express, Sequelize ORM and PostgreSQL",
   "main": "index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SavouryGin/NodeJS_GMP_2022Q4_EPAM.git"
+    "url": "https://github.com/SavouryGin/Express_CRUD_REST_API.git"
   },
   "keywords": [
     "node",
@@ -24,9 +24,9 @@
   "author": "Dmitrii Suroviagin",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/SavouryGin/NodeJS_GMP_2022Q4_EPAM/issues"
+    "url": "https://github.com/SavouryGin/Express_CRUD_REST_API/issues"
   },
-  "homepage": "https://github.com/SavouryGin/NodeJS_GMP_2022Q4_EPAM#readme",
+  "homepage": "https://github.com/SavouryGin/Express_CRUD_REST_API#readme",
   "devDependencies": {
     "@babel/cli": "^7.19.3",
     "@babel/core": "^7.20.5",
